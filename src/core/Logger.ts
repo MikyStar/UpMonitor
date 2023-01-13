@@ -29,9 +29,7 @@ export namespace Logger {
   /**
    * @description Print the message
    */
-  export const log = (log: LogMessage) => {
-    if (!Environment.VERBOSE) return;
-
+  export const log = (log: LogMessage, noDiscord?: boolean) => {
     const level = log.level || 'info';
 
     if (Object.keys({ ...log.details }).length === 0) delete log.details;
@@ -49,16 +47,11 @@ export namespace Logger {
       depth: null,
       showHidden: false,
     });
-    const finalLog = Environment.IS_STRING_LOG
-      ? JSON.stringify(toLog)
-      : formatedJSON;
 
-    level === 'error' ? console.error(finalLog) : console.log(finalLog);
+    level === 'error' ? console.error(formatedJSON) : console.log(formatedJSON);
 
-    if (Environment.DISCORD_ENABLED && Discord.isConnected) {
-      level === 'error'
-        ? Discord.alert(toLog).then(() => {})
-        : Discord.log(toLog).then(() => {});
+    if (Environment.DISCORD_ENABLED && Discord.isConnected && !noDiscord) {
+      Discord.send(toLog);
     }
   };
 
@@ -66,7 +59,6 @@ export namespace Logger {
    * @description Logger handler for retry Promise
    */
   export const logRetry = (params: LogRetryParams) => {
-    // TODO use request.log and addLogDetail instead
     const { tryIndex, error, maxRetries = Environment.MAX_RETRIES } = params;
 
     const toLog: Partial<LogMessage> = {

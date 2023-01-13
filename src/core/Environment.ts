@@ -25,8 +25,7 @@ class Env {
 
   DISCORD_ENABLED: boolean;
   DISCORD_TOKEN: string;
-  DISCORD_LOG_CHANNEL_ID: string;
-  DISCORD_ERROR_CHANNEL_ID: string;
+  DISCORD_CHANNEL_ID: string;
 
   ////////////////////
 
@@ -39,8 +38,7 @@ class Env {
       'RETRY_WAIT',
       'DISCORD_ENABLED',
       'DISCORD_TOKEN',
-      'DISCORD_LOG_CHANNEL_ID',
-      'DISCORD_ERROR_CHANNEL_ID',
+      'DISCORD_CHANNEL_ID',
     ];
 
     requiredVariables.forEach((variable) => {

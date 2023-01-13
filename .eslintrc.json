@@ -20,6 +20,8 @@
     "@typescript-eslint/explicit-module-boundary-types": "off",
     "@typescript-eslint/ban-ts-comment": "off",
     "@typescript-eslint/no-non-null-assertion": "off",
-    "import/order": "error"
+    "import/order": "error",
+    "@typescript-eslint/no-namespace": "off",
+    "@typescript-eslint/no-var-requires": "off"
   }
 }

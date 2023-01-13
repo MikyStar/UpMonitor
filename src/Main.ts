@@ -12,6 +12,7 @@ process.on('uncaughtException', (error) => {
     level: 'error',
     details: error,
   });
+
   System.exit(-1);
 });
 
