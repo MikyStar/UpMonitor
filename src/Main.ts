@@ -46,6 +46,7 @@ const main = async () => {
     // 	() => Server.listen(),
     // 	(retryCbInfos) => Logger.logRetry(retryCbInfos),
     // );
+    console.log('hello world');
   } catch (error) {
     Logger.log({
       name: 'Unexpected error in main',
