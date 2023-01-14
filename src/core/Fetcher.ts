@@ -41,10 +41,23 @@ class Fetcher {
     return response.status === expectedStatusCode;
   };
 
-  areAllAlive = async () => {
-    const areAllive = await Promise.all(this.endpointsNames.map(this.isAlive));
+  getEachStatus = async () => {
+    const eachStatus = await Promise.all(
+      this.endpointsNames.map(async (name) => {
+        return {
+          name,
+          isAlive: await this.isAlive(name),
+        };
+      }),
+    );
 
-    areAllive.forEach((isAlive) => {
+    return eachStatus;
+  };
+
+  areAllAlive = async () => {
+    const eachStatus = await this.getEachStatus();
+
+    eachStatus.forEach(({ isAlive }) => {
       if (!isAlive) return false;
     });
 

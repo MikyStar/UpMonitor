@@ -39,7 +39,8 @@ const main = async () => {
 
     ConfigUtils.check(Config);
     await Discord.setup();
-    await Fetcher.areAllAlive();
+    const endpointsStatus = await Fetcher.getEachStatus();
+    Logger.log({ name: 'Every endpoints status', details: endpointsStatus });
   } catch (error) {
     Logger.error({
       name: 'Unexpected error in main',
