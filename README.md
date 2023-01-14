@@ -2,6 +2,10 @@
 
 Run CRON jobs to notify on Discord if an HTTP endoint is down
 
+## Setup
+
+> You should make your own configuration file at _config/config.ts_ based on _config/config.example.ts_
+
 ## Discord
 
 ### Add bot to channel
