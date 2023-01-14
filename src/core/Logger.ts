@@ -14,7 +14,7 @@ export interface LogMessage {
   details?: any;
 }
 
-export type LogLevel = 'error' | 'warning' | 'info';
+export type LogLevel = 'error' | 'info';
 
 ////////////////////////////////////////
 

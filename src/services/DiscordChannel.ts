@@ -1,4 +1,5 @@
 import { Client, TextChannel } from 'discord.js';
+import { LogMessage } from '../core/Logger';
 
 import { StringUtils } from '../utils/StringUtils';
 
@@ -53,19 +54,21 @@ export class DiscordChannel {
     });
   };
 
-  send = async (content: any) => {
-    const stringPayload = this.handlePayload(content);
-    const chunks = StringUtils.splitEveryNChar(
-      stringPayload,
-      DISCORD_MAX_BODY_CHAR,
-    );
+  send = async (log: LogMessage) => {
+    try {
+      const stringPayload = this.prepareJsonMarkdown(log);
+      const chunks = StringUtils.splitEveryNChar(
+        stringPayload,
+        DISCORD_MAX_BODY_CHAR,
+      );
 
-    for (const chunk of chunks) await this.channel.send(chunk);
+      for (const chunk of chunks) await this.channel.send(chunk);
+    } catch (e) {
+      throw new Error(`Send to Discord channel error: ${e}`);
+    }
   };
 
-  private handlePayload = (content: any) => {
-    if (typeof content === 'string') return content;
-
+  private prepareJsonMarkdown = (content: any) => {
     return '```json\n' + JSON.stringify(content, null, 4) + '\n```';
   };
 }
