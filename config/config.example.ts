@@ -17,6 +17,7 @@ export const exampleConfig: IConfig = {
     {
       name: 'Endpoint name',
       url: 'http://url.com',
+      expectedStatusCode: 200,
       channelID: 'Channel ID',
       cronJobSchedule: '15 14 1 * *', // At 14:15 on day-of-month 1
     },

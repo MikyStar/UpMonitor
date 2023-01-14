@@ -1,5 +1,5 @@
 import { Config } from '../../config/config';
-import { IConfig } from '../../config/IConfig';
+import { EndpointConfig, IConfig } from '../../config/IConfig';
 import { Logger, LogMessage, LOG_DATE_FORMAT } from '../core/Logger';
 
 import pkg from '../../package.json';
@@ -13,8 +13,7 @@ export const ERRORS_CHANNEL = 'errors';
 
 ////////////////////////////////////////////////////////////////////////////////
 
-type EndpointChannel = {
-  name: string;
+type EndpointChannel = Pick<EndpointConfig, 'name'> & {
   channel: DiscordChannel;
 };
 

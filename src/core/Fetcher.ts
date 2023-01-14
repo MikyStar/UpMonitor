@@ -1,13 +1,9 @@
 import { Config } from '../../config/config';
-import { IConfig } from '../../config/IConfig';
-import { Logger } from '../core/Logger';
+import { EndpointConfig, IConfig } from '../../config/IConfig';
 
 ////////////////////////////////////////////////////////////////////////////////
 
-type EndpointUrl = {
-  name: string;
-  url: string;
-};
+type EndpointUrl = Pick<EndpointConfig, 'name' | 'url' | 'expectedStatusCode'>;
 
 class Fetcher {
   endpointsNames: string[];
@@ -17,12 +13,13 @@ class Fetcher {
     this.endpointsNames = [];
     this.endpointsUrls = [];
     config.endpointsConfigs.forEach((endpoint) => {
-      const { name, url } = endpoint;
+      const { name, url, expectedStatusCode } = endpoint;
 
       this.endpointsNames.push(name);
       this.endpointsUrls.push({
         name,
         url,
+        expectedStatusCode,
       });
     });
   }
@@ -31,15 +28,17 @@ class Fetcher {
     if (!this.endpointsNames.includes(endpointName))
       throw new Error(`Endpoint name '${endpointName}' not in config`);
 
-    const { url } = this.endpointsUrls.find(
+    const { url, expectedStatusCode } = this.endpointsUrls.find(
       (endpoint) => endpoint.name === endpointName,
     );
 
     if (!url) throw new Error(`No URL found for '${endpointName}'`);
+    if (!expectedStatusCode)
+      throw new Error(`No expected status code found for '${endpointName}'`);
 
-    Logger.log({ name: 'in alive' });
+    const response = await fetch(url);
 
-    return false; // TODO check if is alive and ret
+    return response.status === expectedStatusCode;
   };
 
   areAllAlive = async () => {
