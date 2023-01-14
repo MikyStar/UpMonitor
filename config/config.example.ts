@@ -3,11 +3,13 @@ import { IConfig } from './IConfig';
 ////////////////////////////////////////
 
 /**
- * You should make your own file named 'config.ts' based on this one,
- * under the 'config' directory just like this one
+ * You should make your own file named 'config.ts' based on this one
+ * under this 'config' directory
+ *
+ * Check out the interface 'IConfig' for infos about optional types
  */
 export const exampleConfig: IConfig = {
-  errorsChannelID: 'Error channel ID',
+  errorsChannelID: 'Global errors channel ID',
   discordToken: 'Token',
 
   endpointsConfigs: [
@@ -15,7 +17,7 @@ export const exampleConfig: IConfig = {
       name: 'Endpoint name',
       url: 'http://url.com',
       channelID: 'Channel ID',
-      cronJob: '15 14 1 * *', // At 14:15 on day-of-month 1
+      cronJobSchedule: '15 14 1 * *', // At 14:15 on day-of-month 1
     },
   ],
 };
