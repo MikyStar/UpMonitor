@@ -54,7 +54,7 @@ export class DiscordChannel {
   };
 
   send = async (content: any) => {
-    const stringPayload = this.handlePayload(content);
+    const stringPayload = this.prepareJsonMarkdown(content);
     const chunks = StringUtils.splitEveryNChar(
       stringPayload,
       DISCORD_MAX_BODY_CHAR,
@@ -63,9 +63,7 @@ export class DiscordChannel {
     for (const chunk of chunks) await this.channel.send(chunk);
   };
 
-  private handlePayload = (content: any) => {
-    if (typeof content === 'string') return content;
-
-    return '```json\n' + JSON.stringify(content, null, 4) + '\n```';
+  private prepareJsonMarkdown = (content: any) => {
+    return '```json\n' + content + '\n```';
   };
 }
