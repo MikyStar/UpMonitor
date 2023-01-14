@@ -35,8 +35,6 @@ const main = async () => {
     Logger.log({ name: 'Starting Server' });
 
     await Discord.setup();
-
-    console.log('hello world');
   } catch (error) {
     Logger.log({
       name: 'Unexpected error in main',

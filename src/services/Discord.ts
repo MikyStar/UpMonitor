@@ -1,82 +1,67 @@
-import { Client, TextChannel } from 'discord.js';
+import { Config } from '../../config/config';
+import { IConfig } from '../../config/IConfig';
 
-import Environment from '../core/Environment';
-import { Logger } from '../core/Logger';
-import { StringUtils } from '../utils';
-
-////////////////////////////////////////////////////////////////////////////////
-
-const DISCORD_MAX_BODY_CHAR = 2_000;
+import { DiscordChannel } from './DiscordChannel';
 
 ////////////////////////////////////////////////////////////////////////////////
 
-/**
- * @description Send logs to discord channel, alerts and CLI
- */
+type EndpointChannel = {
+  name: string;
+  channel: DiscordChannel;
+};
+
 class Discord {
-  isConnected: boolean;
+  errorChannel: DiscordChannel;
 
-  client: Client;
+  endpointNames: string[];
+  endpointsChannels: EndpointChannel[];
 
-  token: string;
-  channelID: string;
+  constructor(config: IConfig) {
+    this.errorChannel = new DiscordChannel(
+      config.discordToken,
+      config.errorsChannelID,
+    );
 
-  channel: TextChannel;
+    this.endpointNames = [];
+    this.endpointsChannels = [];
+    config.endpointsConfigs.forEach((endpoint) => {
+      const { name, channelID } = endpoint;
 
-  constructor(token: string, channelID: string) {
-    this.isConnected = false;
+      if (this.endpointNames.includes(name))
+        throw new Error(`Duplicate endpoint name '${name}'`);
 
-    this.client = new Client({
-      intents: [],
-    });
+      this.endpointNames.push(name);
 
-    this.token = token;
-
-    this.channelID = channelID;
-
-    this.client.on('error', (error) => {
-      console.log(`error ${error}!`);
+      this.endpointsChannels.push({
+        name,
+        channel: new DiscordChannel(config.discordToken, channelID),
+      });
     });
   }
 
   setup = async () => {
-    return new Promise(async (resolve) => {
-      this.client.on('ready', async () => {
-        await this.client.channels.fetch(this.channelID);
-        this.channel = this.client.channels.cache.get(
-          this.channelID,
-        ) as TextChannel;
+    const connect = async (endpoint: EndpointChannel) => {
+      await endpoint.channel.setup();
+      console.log(`Connected to Discord channel for '${endpoint.name}'`);
+    };
 
-        Logger.log({ name: 'Discord bot connected' });
+    await Promise.all([
+      connect({ name: 'General errors', channel: this.errorChannel }),
 
-        this.isConnected = true;
-        resolve(true);
-      });
-
-      await this.client.login(this.token);
-    });
+      ...this.endpointsChannels.map(connect),
+    ]);
   };
 
-  send = async (content: any) => {
-    const stringPayload = this.handlePayload(content);
-    const chunks = StringUtils.splitEveryNChar(
-      stringPayload,
-      DISCORD_MAX_BODY_CHAR,
+  send = async (channelName: string, content: any) => {
+    if (!this.endpointNames.includes(channelName))
+      throw new Error('Channel name not in config');
+
+    const { channel } = this.endpointsChannels.find(
+      (endpoint) => endpoint.name === channelName,
     );
 
-    for (const chunk of chunks) await this.channel.send(chunk);
-  };
-
-  private handlePayload = (content: any) => {
-    if (typeof content === 'string') return content;
-
-    return '```json\n' + JSON.stringify(content, null, 4) + '\n```';
+    return channel.send(content);
   };
 }
 
-////////////////////////////////////////////////////////////////////////////////
-
-export default new Discord(
-  Environment.DISCORD_TOKEN,
-  Environment.DISCORD_CHANNEL_ID,
-);
+export default new Discord(Config);
