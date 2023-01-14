@@ -18,38 +18,37 @@ type EndpointChannel = {
 };
 
 class Discord {
-  errorsChannel: EndpointChannel;
-  logsChannel: EndpointChannel;
-
   channelNames: string[];
-  endpointsChannels: EndpointChannel[];
+  channels: EndpointChannel[];
 
   constructor(config: IConfig) {
     this.channelNames = [LOGS_CHANNEL, ERRORS_CHANNEL];
+    this.channels = [
+      {
+        name: LOGS_CHANNEL,
+        channel: new DiscordChannel(config.discordToken, config.logChannelID),
+      },
+      {
+        name: ERRORS_CHANNEL,
+        channel: new DiscordChannel(
+          config.discordToken,
+          config.errorsChannelID,
+        ),
+      },
+    ];
 
-    this.logsChannel = {
-      name: LOGS_CHANNEL,
-      channel: new DiscordChannel(config.discordToken, config.logChannelID),
-    };
-    this.errorsChannel = {
-      name: ERRORS_CHANNEL,
-      channel: new DiscordChannel(config.discordToken, config.errorsChannelID),
-    };
+    // config.endpointsConfigs.forEach((endpoint) => {
+    //   const { name, channelID } = endpoint;
 
-    this.endpointsChannels = [];
-    config.endpointsConfigs.forEach((endpoint) => {
-      const { name, channelID } = endpoint;
+    //   if (this.channelNames.includes(name))
+    //     throw new Error(`Duplicate endpoint name '${name}'`);
 
-      if (this.channelNames.includes(name))
-        throw new Error(`Duplicate endpoint name '${name}'`);
-
-      this.channelNames.push(name);
-
-      this.endpointsChannels.push({
-        name,
-        channel: new DiscordChannel(config.discordToken, channelID),
-      });
-    });
+    //   this.channelNames.push(name);
+    //   this.channels.push({
+    //     name,
+    //     channel: new DiscordChannel(config.discordToken, channelID),
+    //   });
+    // });
   }
 
   setup = async () => {
@@ -67,12 +66,7 @@ class Discord {
       });
     };
 
-    await Promise.all([
-      connect(this.logsChannel),
-      // connect(this.errorsChannel),
-
-      // ...this.endpointsChannels.map(connect),
-    ]);
+    await Promise.all(this.channels.map(connect));
   };
 
   log = async (content: any) => {
@@ -89,7 +83,7 @@ class Discord {
     if (!this.channelNames.includes(channelName))
       throw new Error('Channel name not in config');
 
-    const { channel } = this.endpointsChannels.find(
+    const { channel } = this.channels.find(
       (endpoint) => endpoint.name === channelName,
     );
 
