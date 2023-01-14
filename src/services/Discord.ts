@@ -19,28 +19,29 @@ class Discord {
   errorsChannel: EndpointChannel;
   logsChannel: EndpointChannel;
 
-  endpointNames: string[];
+  channelNames: string[];
   endpointsChannels: EndpointChannel[];
 
   constructor(config: IConfig) {
-    this.errorsChannel = {
-      name: ERRORS_CHANNEL,
-      channel: new DiscordChannel(config.discordToken, config.errorsChannelID),
-    };
+    this.channelNames = [LOGS_CHANNEL, ERRORS_CHANNEL];
+
     this.logsChannel = {
       name: LOGS_CHANNEL,
       channel: new DiscordChannel(config.discordToken, config.logChannelID),
     };
+    this.errorsChannel = {
+      name: ERRORS_CHANNEL,
+      channel: new DiscordChannel(config.discordToken, config.errorsChannelID),
+    };
 
-    this.endpointNames = [];
     this.endpointsChannels = [];
     config.endpointsConfigs.forEach((endpoint) => {
       const { name, channelID } = endpoint;
 
-      if (this.endpointNames.includes(name))
+      if (this.channelNames.includes(name))
         throw new Error(`Duplicate endpoint name '${name}'`);
 
-      this.endpointNames.push(name);
+      this.channelNames.push(name);
 
       this.endpointsChannels.push({
         name,
@@ -64,7 +65,7 @@ class Discord {
   };
 
   send = async (channelName: string, content: any) => {
-    if (!this.endpointNames.includes(channelName))
+    if (!this.channelNames.includes(channelName))
       throw new Error('Channel name not in config');
 
     const { channel } = this.endpointsChannels.find(
