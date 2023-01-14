@@ -29,13 +29,13 @@ class Discord {
         name: LOGS_CHANNEL,
         channel: new DiscordChannel(config.discordToken, config.logsChannelID),
       },
-      {
-        name: ERRORS_CHANNEL,
-        channel: new DiscordChannel(
-          config.discordToken,
-          config.errorsChannelID,
-        ),
-      },
+      // {
+      //   name: ERRORS_CHANNEL,
+      //   channel: new DiscordChannel(
+      //     config.discordToken,
+      //     config.errorsChannelID,
+      //   ),
+      // },
     ];
 
     // config.endpointsConfigs.forEach((endpoint) => {
@@ -56,43 +56,79 @@ class Discord {
     const connect = async (endpoint: EndpointChannel) => {
       await endpoint.channel.setup();
 
-      await this.log({
-        name: `Connected to Discord channel for '${endpoint.name}'`,
-        level: 'info',
-      });
-
-      await this.send(endpoint.name, {
+      await this.info(endpoint.name, {
         name: `${pkg.name} bot connected`,
-        level: 'info',
       });
     };
 
     await Promise.all(this.channels.map(connect));
   };
 
-  log = async (content: LogMessage) => {
-    Logger.log(content);
-    await this.send(LOGS_CHANNEL, content);
-  };
-
-  error = async (content: LogMessage) => {
-    Logger.error(content);
-    await this.send(ERRORS_CHANNEL, content);
-  };
-
-  send = async (channelName: string, content: LogMessage) => {
-    if (!this.channelNames.includes(channelName))
-      throw new Error('Channel name not in config');
+  info = async (channelName: string, content: LogMessage) => {
+    if (!content.level) content.level = 'info';
+    if (content?.level !== 'info') throw new Error('Bad log level');
 
     if (!content.timestamp) {
       content.timestamp = DateUtils.getFormatedTimeStamp(LOG_DATE_FORMAT);
     }
 
+    const logWithName = this.appendChannelNameToLogDetails(
+      channelName,
+      content,
+    );
+
+    Logger.log(logWithName);
+    await this.sendToChannel(LOGS_CHANNEL, logWithName);
+
+    await this.sendToChannel(channelName, content);
+  };
+
+  error = async (channelName: string, content: LogMessage) => {
+    if (!content.level) content.level = 'error';
+    if (content?.level !== 'error') throw new Error('Bad log level');
+
+    if (!content.timestamp) {
+      content.timestamp = DateUtils.getFormatedTimeStamp(LOG_DATE_FORMAT);
+    }
+
+    const logWithName = this.appendChannelNameToLogDetails(
+      channelName,
+      content,
+    );
+
+    Logger.error(logWithName);
+    await this.sendToChannel(ERRORS_CHANNEL, logWithName);
+
+    await this.sendToChannel(channelName, content);
+  };
+
+  ////////////////////
+
+  private sendToChannel = async (channelName: string, content: LogMessage) => {
+    if (!this.channelNames.includes(channelName))
+      throw new Error(`Channel name '${channelName}' not in config`);
+
     const { channel } = this.channels.find(
       (endpoint) => endpoint.name === channelName,
     );
 
+    if (!channel)
+      throw new Error(`No DiscordChannel found for '${channelName}'`);
+
     return channel.send(content);
+  };
+
+  private appendChannelNameToLogDetails = (
+    channelName: string,
+    log: LogMessage,
+  ): LogMessage => {
+    return {
+      ...log,
+      details: {
+        ...log.details,
+        channelName,
+      },
+    };
   };
 }
 
