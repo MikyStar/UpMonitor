@@ -11,15 +11,20 @@ type EndpointChannel = {
 };
 
 class Discord {
-  errorChannel: DiscordChannel;
+  errorsChannel: DiscordChannel;
+  logsChannel: DiscordChannel;
 
   endpointNames: string[];
   endpointsChannels: EndpointChannel[];
 
   constructor(config: IConfig) {
-    this.errorChannel = new DiscordChannel(
+    this.errorsChannel = new DiscordChannel(
       config.discordToken,
       config.errorsChannelID,
+    );
+    this.logsChannel = new DiscordChannel(
+      config.discordToken,
+      config.logChannelID,
     );
 
     this.endpointNames = [];
@@ -46,7 +51,8 @@ class Discord {
     };
 
     await Promise.all([
-      connect({ name: 'General errors', channel: this.errorChannel }),
+      connect({ name: 'General logs', channel: this.logsChannel }),
+      connect({ name: 'General errors', channel: this.errorsChannel }),
 
       ...this.endpointsChannels.map(connect),
     ]);

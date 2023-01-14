@@ -1,6 +1,7 @@
 export type IConfig = {
-  errorsChannelID: string;
   discordToken: string;
+  logChannelID: string;
+  errorsChannelID: string;
 
   endpointsConfigs: EndpointConfig[];
 };

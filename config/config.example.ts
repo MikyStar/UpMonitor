@@ -9,8 +9,9 @@ import { IConfig } from './IConfig';
  * Check out the interface 'IConfig' for infos about optional types
  */
 export const exampleConfig: IConfig = {
-  errorsChannelID: 'Global errors channel ID',
   discordToken: 'Token',
+  errorsChannelID: 'Global errors channel ID',
+  logChannelID: 'Global logs channel ID',
 
   endpointsConfigs: [
     {
