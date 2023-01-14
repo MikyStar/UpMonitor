@@ -1,6 +1,7 @@
 import { Logger } from './core/Logger';
 import Discord from './services/Discord';
 import { System } from './core/System';
+import Fetcher from './core/Fetcher';
 
 ////////////////////////////////////////
 
@@ -35,6 +36,7 @@ const main = async () => {
     Logger.log({ name: 'Starting Server' });
 
     await Discord.setup();
+    await Fetcher.areAllAlive();
   } catch (error) {
     Logger.error({
       name: 'Unexpected error in main',
