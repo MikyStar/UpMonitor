@@ -29,27 +29,27 @@ class Discord {
         name: LOGS_CHANNEL,
         channel: new DiscordChannel(config.discordToken, config.logsChannelID),
       },
-      // {
-      //   name: ERRORS_CHANNEL,
-      //   channel: new DiscordChannel(
-      //     config.discordToken,
-      //     config.errorsChannelID,
-      //   ),
-      // },
+      {
+        name: ERRORS_CHANNEL,
+        channel: new DiscordChannel(
+          config.discordToken,
+          config.errorsChannelID,
+        ),
+      },
     ];
 
-    // config.endpointsConfigs.forEach((endpoint) => {
-    //   const { name, channelID } = endpoint;
+    config.endpointsConfigs.forEach((endpoint) => {
+      const { name, channelID } = endpoint;
 
-    //   if (this.channelNames.includes(name))
-    //     throw new Error(`Duplicate endpoint name '${name}'`);
+      if (this.channelNames.includes(name))
+        throw new Error(`Duplicate endpoint name '${name}'`);
 
-    //   this.channelNames.push(name);
-    //   this.channels.push({
-    //     name,
-    //     channel: new DiscordChannel(config.discordToken, channelID),
-    //   });
-    // });
+      this.channelNames.push(name);
+      this.channels.push({
+        name,
+        channel: new DiscordChannel(config.discordToken, channelID),
+      });
+    });
   }
 
   setup = async () => {
