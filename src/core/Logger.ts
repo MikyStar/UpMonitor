@@ -19,10 +19,7 @@ export type LogLevel = 'error' | 'warning' | 'info';
 ////////////////////////////////////////
 
 export namespace Logger {
-  /**
-   * @description Print the message
-   */
-  export const log = (log: LogMessage) => {
+  export const formatMessage = (log: LogMessage) => {
     const level = log.level || 'info';
 
     if (Object.keys({ ...log.details }).length === 0) delete log.details;
@@ -41,8 +38,30 @@ export namespace Logger {
       showHidden: false,
     });
 
-    level === 'error' ? console.error(formatedJSON) : console.log(formatedJSON);
-
     return formatedJSON;
+  };
+
+  /**
+   * Format and print to stdout, sets the level to 'info'
+   */
+  export const log = (log: LogMessage) => {
+    const formatedJSON = formatMessage({
+      ...log,
+      level: 'info',
+    });
+
+    console.log(formatedJSON);
+  };
+
+  /**
+   * Format and print to stderr, sets the level to 'error'
+   */
+  export const error = (log: LogMessage) => {
+    const formatedJSON = formatMessage({
+      ...log,
+      level: 'error',
+    });
+
+    console.error(formatedJSON);
   };
 }

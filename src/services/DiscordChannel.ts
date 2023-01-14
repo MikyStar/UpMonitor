@@ -45,8 +45,6 @@ export class DiscordChannel {
           this.channelID,
         ) as TextChannel;
 
-        console.log('----------');
-
         this.isConnected = true;
         resolve();
       });

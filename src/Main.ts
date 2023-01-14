@@ -5,9 +5,8 @@ import { System } from './core/System';
 ////////////////////////////////////////
 
 process.on('uncaughtException', (error) => {
-  Logger.log({
+  Logger.error({
     name: 'Process uncaught exception',
-    level: 'error',
     details: error,
   });
 
@@ -15,16 +14,17 @@ process.on('uncaughtException', (error) => {
 });
 
 process.on('unhandledRejection', (error) => {
-  Logger.log({
+  Logger.error({
     name: 'Process unhandled rejection',
-    level: 'error',
     details: error,
   });
+
   System.exit(-1);
 });
 
 process.on('SIGINT', () => {
-  Logger.log({ name: 'Received SIGINT', level: 'info' });
+  Logger.log({ name: 'Received SIGINT' });
+
   System.exit(-1);
 });
 
@@ -36,9 +36,8 @@ const main = async () => {
 
     await Discord.setup();
   } catch (error) {
-    Logger.log({
+    Logger.error({
       name: 'Unexpected error in main',
-      level: 'error',
       details: error,
     });
 
