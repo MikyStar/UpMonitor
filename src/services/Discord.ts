@@ -1,8 +1,9 @@
 import { Config } from '../../config/config';
 import { IConfig } from '../../config/IConfig';
-import { Logger } from '../core/Logger';
+import { Logger, LogMessage, LOG_DATE_FORMAT } from '../core/Logger';
 
 import pkg from '../../package.json';
+import { DateUtils } from '../utils/DateUtils';
 import { DiscordChannel } from './DiscordChannel';
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -69,19 +70,23 @@ class Discord {
     await Promise.all(this.channels.map(connect));
   };
 
-  log = async (content: any) => {
+  log = async (content: LogMessage) => {
     Logger.log(content);
     await this.send(LOGS_CHANNEL, content);
   };
 
-  error = async (content: any) => {
+  error = async (content: LogMessage) => {
     Logger.error(content);
     await this.send(ERRORS_CHANNEL, content);
   };
 
-  send = async (channelName: string, content: any) => {
+  send = async (channelName: string, content: LogMessage) => {
     if (!this.channelNames.includes(channelName))
       throw new Error('Channel name not in config');
+
+    if (!content.timestamp) {
+      content.timestamp = DateUtils.getFormatedTimeStamp(LOG_DATE_FORMAT);
+    }
 
     const { channel } = this.channels.find(
       (endpoint) => endpoint.name === channelName,
