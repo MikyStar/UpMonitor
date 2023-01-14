@@ -1,5 +1,5 @@
 import util from 'util';
-import { DateUtils } from '../utils/DateUtils';
+import { DateUtils } from '../utils/date.utils';
 
 ////////////////////////////////////////
 

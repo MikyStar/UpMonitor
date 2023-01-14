@@ -19,9 +19,6 @@ class Fetcher {
     config.endpointsConfigs.forEach((endpoint) => {
       const { name, url } = endpoint;
 
-      if (this.endpointsNames.includes(name))
-        throw new Error(`Duplicate endpoint name '${name}'`);
-
       this.endpointsNames.push(name);
       this.endpointsUrls.push({
         name,

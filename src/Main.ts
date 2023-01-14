@@ -1,7 +1,9 @@
+import { Config } from '../config/config';
 import { Logger } from './core/Logger';
 import Discord from './services/Discord';
 import { System } from './core/System';
 import Fetcher from './core/Fetcher';
+import { ConfigUtils } from './utils/config.utils';
 
 ////////////////////////////////////////
 
@@ -35,6 +37,7 @@ const main = async () => {
   try {
     Logger.log({ name: 'Starting Server' });
 
+    ConfigUtils.check(Config);
     await Discord.setup();
     await Fetcher.areAllAlive();
   } catch (error) {
