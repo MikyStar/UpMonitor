@@ -29,7 +29,7 @@ export namespace Logger {
   /**
    * @description Print the message
    */
-  export const log = (log: LogMessage, noDiscord?: boolean) => {
+  export const log = (log: LogMessage) => {
     const level = log.level || 'info';
 
     if (Object.keys({ ...log.details }).length === 0) delete log.details;
@@ -50,7 +50,7 @@ export namespace Logger {
 
     level === 'error' ? console.error(formatedJSON) : console.log(formatedJSON);
 
-    if (Environment.DISCORD_ENABLED && Discord.isConnected && !noDiscord) {
+    if (Environment.DISCORD_ENABLED && Discord.isConnected) {
       Discord.send(toLog);
     }
   };

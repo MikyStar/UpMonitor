@@ -14,7 +14,7 @@
   },
   "scripts": {
     "start": "wds src/Main.ts",
-    "dev": "wds --watch src/Main.ts",
+    "dev": "wds --watch -c src/Main.ts",
     "lint": "eslint src --ext .ts --fix",
 
     "security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
@@ -40,10 +40,8 @@
   },
   "dependencies": {
     "@types/prompts": "^2.0.14",
-    "chalk": "^4.1.2",
     "discord.js": "^14.1.2",
     "dotenv": "^16.0.0",
-    "moment": "^2.29.3",
-    "prompts": "^2.4.2"
+    "moment": "^2.29.3"
   }
 }
