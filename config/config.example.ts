@@ -11,7 +11,7 @@ import { IConfig } from './IConfig';
 export const exampleConfig: IConfig = {
   discordToken: 'Token',
   errorsChannelID: 'Global errors channel ID',
-  logChannelID: 'Global logs channel ID',
+  logsChannelID: 'Global logs channel ID',
 
   endpointsConfigs: [
     {

@@ -26,7 +26,7 @@ class Discord {
     this.channels = [
       {
         name: LOGS_CHANNEL,
-        channel: new DiscordChannel(config.discordToken, config.logChannelID),
+        channel: new DiscordChannel(config.discordToken, config.logsChannelID),
       },
       {
         name: ERRORS_CHANNEL,
