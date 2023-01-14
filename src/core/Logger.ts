@@ -1,6 +1,5 @@
-import { DateUtils } from '../utils';
-import Discord from '../services/Discord';
-import Environment from './Environment';
+import util from 'util';
+import { DateUtils } from '../utils/DateUtils';
 
 ////////////////////////////////////////
 
@@ -16,12 +15,6 @@ export interface LogMessage {
 }
 
 export type LogLevel = 'error' | 'warning' | 'info';
-
-interface LogRetryParams {
-  tryIndex: number;
-  error: any;
-  maxRetries?: number;
-}
 
 ////////////////////////////////////////
 
@@ -43,40 +36,13 @@ export namespace Logger {
       ...log,
     };
 
-    const formatedJSON = require('util').inspect(toLog, {
+    const formatedJSON = util.inspect(toLog, {
       depth: null,
       showHidden: false,
     });
 
     level === 'error' ? console.error(formatedJSON) : console.log(formatedJSON);
 
-    if (Environment.DISCORD_ENABLED && Discord.isConnected) {
-      Discord.send(toLog);
-    }
-  };
-
-  /**
-   * @description Logger handler for retry Promise
-   */
-  export const logRetry = (params: LogRetryParams) => {
-    const { tryIndex, error, maxRetries = Environment.MAX_RETRIES } = params;
-
-    const toLog: Partial<LogMessage> = {
-      details: { retryNumber: tryIndex, error },
-    };
-
-    if (tryIndex !== maxRetries) {
-      Logger.log({
-        ...toLog,
-        name: 'Retrying',
-        level: 'warning',
-      });
-    } else {
-      Logger.log({
-        ...toLog,
-        name: 'Error on last retry',
-        level: 'error',
-      });
-    }
+    return formatedJSON;
   };
 }

@@ -1,7 +1,5 @@
 import { Logger } from './core/Logger';
 import Discord from './services/Discord';
-import { AsyncUtils } from './utils';
-import Environment from './core/Environment';
 import { System } from './core/System';
 
 ////////////////////////////////////////
@@ -36,18 +34,7 @@ const main = async () => {
   try {
     Logger.log({ name: 'Starting Server' });
 
-    if (Environment.DISCORD_ENABLED) {
-      await AsyncUtils.retry(
-        () => Discord.setup(),
-        (retryCbInfos) => Logger.logRetry(retryCbInfos),
-      );
-    }
-
-    // await AsyncUtils.retry(
-    // 	() => Server.listen(),
-    // 	(retryCbInfos) => Logger.logRetry(retryCbInfos),
-    // );
-    console.log('hello world');
+    await Discord.setup();
   } catch (error) {
     Logger.log({
       name: 'Unexpected error in main',
