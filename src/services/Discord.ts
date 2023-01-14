@@ -5,27 +5,32 @@ import { DiscordChannel } from './DiscordChannel';
 
 ////////////////////////////////////////////////////////////////////////////////
 
+const LOGS_CHANNEL = 'General logs';
+const ERRORS_CHANNEL = 'General errors';
+
+////////////////////////////////////////////////////////////////////////////////
+
 type EndpointChannel = {
   name: string;
   channel: DiscordChannel;
 };
 
 class Discord {
-  errorsChannel: DiscordChannel;
-  logsChannel: DiscordChannel;
+  errorsChannel: EndpointChannel;
+  logsChannel: EndpointChannel;
 
   endpointNames: string[];
   endpointsChannels: EndpointChannel[];
 
   constructor(config: IConfig) {
-    this.errorsChannel = new DiscordChannel(
-      config.discordToken,
-      config.errorsChannelID,
-    );
-    this.logsChannel = new DiscordChannel(
-      config.discordToken,
-      config.logChannelID,
-    );
+    this.errorsChannel = {
+      name: ERRORS_CHANNEL,
+      channel: new DiscordChannel(config.discordToken, config.errorsChannelID),
+    };
+    this.logsChannel = {
+      name: LOGS_CHANNEL,
+      channel: new DiscordChannel(config.discordToken, config.logChannelID),
+    };
 
     this.endpointNames = [];
     this.endpointsChannels = [];
@@ -51,8 +56,8 @@ class Discord {
     };
 
     await Promise.all([
-      connect({ name: 'General logs', channel: this.logsChannel }),
-      connect({ name: 'General errors', channel: this.errorsChannel }),
+      connect(this.logsChannel),
+      connect(this.errorsChannel),
 
       ...this.endpointsChannels.map(connect),
     ]);
