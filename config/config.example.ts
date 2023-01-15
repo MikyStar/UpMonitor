@@ -10,15 +10,15 @@ import { IConfig } from './IConfig';
  */
 export const exampleConfig: IConfig = {
   discordToken: 'Token',
-  errorsChannelID: 'Global errors channel ID',
-  logsChannelID: 'Global logs channel ID',
+  errorsChannelID: 'Global Discord errors channel ID',
+  logsChannelID: 'Global Discord logs channel ID',
 
   endpointsConfigs: [
     {
       name: 'Endpoint name',
       url: 'http://url.com',
       expectedStatusCode: 200,
-      channelID: 'Channel ID',
+      channelID: 'Discord Channel ID',
       cronJobSchedule: '15 14 1 * *', // At 14:15 on day-of-month 1
     },
   ],

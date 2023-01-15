@@ -4,7 +4,50 @@ Run CRON jobs to notify on Discord if an HTTP endoint is down
 
 ## Setup
 
+1. Create a configuration file
+
+```sh
+cp config/config.example.ts config/config.ts
+```
+
+> Edit it according to the [config file section](#config-file)
+
+2. Install dependencies
+
+```sh
+pnpm i
+```
+
+2. Run server
+
+```sh
+pnpm start
+```
+
+## Config file
+
 > You should make your own configuration file at _config/config.ts_ based on _config/config.example.ts_
+
+```ts
+import { IConfig } from './IConfig'; // Provides IntelliSense
+
+export const exampleConfig: IConfig = {
+  discordToken: 'Token',
+  errorsChannelID: 'Global Discord errors channel ID',
+  logsChannelID: 'Global Discord logs channel ID',
+
+  endpointsConfigs: [
+    {
+      name: 'Endpoint name',
+      url: 'http://url.com',
+      expectedStatusCode: 200,
+      channelID: 'Discord Channel ID',
+      cronJobSchedule: '15 14 1 * *', // At 14:15 on day-of-month 1
+    },
+  ],
+};
+
+```
 
 ## Discord
 
