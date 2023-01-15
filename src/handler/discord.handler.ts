@@ -4,7 +4,7 @@ import Logger, { ILogger, LogMessage, LOG_DATE_FORMAT } from '../core/Logger';
 
 import pkg from '../../package.json';
 import { DateUtils } from '../utils/date.utils';
-import { DiscordChannel } from '../services/DiscordChannel';
+import { DiscordChannel } from '../core/DiscordChannel';
 
 ////////////////////////////////////////////////////////////////////////////////
 
