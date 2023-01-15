@@ -4,21 +4,27 @@ Run CRON jobs to notify on Discord if an HTTP endoint is down
 
 ## Setup
 
-1. Create a configuration file
+1. Clone the project
+
+```sh
+git clone https://github.com/MikyStar/UpMonitor.git
+```
+
+2. Create a configuration file
 
 ```sh
 cp config/config.example.ts config/config.ts
 ```
 
-> Edit it according to the [config file section](#config-file)
+Edit it according to the [config file section](#config-file)
 
-2. Install dependencies
+3. Install dependencies
 
 ```sh
 pnpm i
 ```
 
-2. Run server
+4. Run server
 
 ```sh
 pnpm start
