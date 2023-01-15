@@ -1,22 +1,23 @@
 import { Config } from '../../config/config';
-import { IConfig } from '../../config/IConfig';
+import { EndpointConfig, IConfig } from '../../config/IConfig';
 import { Logger, LogMessage, LOG_DATE_FORMAT } from '../core/Logger';
 
 import pkg from '../../package.json';
-import { DateUtils } from '../utils/DateUtils';
+import { DateUtils } from '../utils/date.utils';
 import { DiscordChannel } from './DiscordChannel';
 
 ////////////////////////////////////////////////////////////////////////////////
 
-const LOGS_CHANNEL = 'logs';
-const ERRORS_CHANNEL = 'errors';
+export const LOGS_CHANNEL = 'logs';
+export const ERRORS_CHANNEL = 'errors';
 
 ////////////////////////////////////////////////////////////////////////////////
 
-type EndpointChannel = {
-  name: string;
+type EndpointChannel = Pick<EndpointConfig, 'name'> & {
   channel: DiscordChannel;
 };
+
+export type IDiscord = Discord;
 
 class Discord {
   channelNames: string[];
@@ -40,9 +41,6 @@ class Discord {
 
     config.endpointsConfigs.forEach((endpoint) => {
       const { name, channelID } = endpoint;
-
-      if (this.channelNames.includes(name))
-        throw new Error(`Duplicate endpoint name '${name}'`);
 
       this.channelNames.push(name);
       this.channels.push({

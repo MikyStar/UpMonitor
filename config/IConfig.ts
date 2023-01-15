@@ -9,13 +9,11 @@ export type IConfig = {
 export type EndpointConfig = {
   name: string;
   url: string;
+  expectedStatusCode: number;
   channelID: string;
   cronJobSchedule: string;
 
   retry?: Retry;
-
-  onSuccess?: VoidFunction;
-  onError?: (statusCode: number, content?: string) => void;
 };
 
 export type Retry = {

@@ -1,6 +1,9 @@
+import { Config } from '../config/config';
 import { Logger } from './core/Logger';
 import Discord from './services/Discord';
 import { System } from './core/System';
+import { ConfigUtils } from './utils/config.utils';
+import FetcherHandler from './handler/fetcher.handler';
 
 ////////////////////////////////////////
 
@@ -34,7 +37,9 @@ const main = async () => {
   try {
     Logger.log({ name: 'Starting Server' });
 
+    ConfigUtils.check(Config);
     await Discord.setup();
+    await FetcherHandler.checkEveryEndpoints();
   } catch (error) {
     Logger.error({
       name: 'Unexpected error in main',
