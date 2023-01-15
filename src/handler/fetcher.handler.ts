@@ -14,6 +14,18 @@ class FetcherHandler {
 
   checkEveryEndpoints = async () => {
     const eachStatus = await this.fetcher.getEachStatus();
+
+    eachStatus.forEach(async ({ name, isAlive }) => {
+      if (!isAlive) {
+        await this.discord.error(name, {
+          name: 'Endpoint not alive',
+        });
+      } else {
+        await this.discord.info(name, {
+          name: 'Endpoint alive',
+        });
+      }
+    });
   };
 }
 

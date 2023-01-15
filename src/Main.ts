@@ -2,8 +2,8 @@ import { Config } from '../config/config';
 import { Logger } from './core/Logger';
 import Discord from './services/Discord';
 import { System } from './core/System';
-import Fetcher from './core/Fetcher';
 import { ConfigUtils } from './utils/config.utils';
+import FetcherHandler from './handler/fetcher.handler';
 
 ////////////////////////////////////////
 
@@ -39,8 +39,7 @@ const main = async () => {
 
     ConfigUtils.check(Config);
     await Discord.setup();
-    const endpointsStatus = await Fetcher.getEachStatus();
-    Logger.log({ name: 'Endpoints status', details: endpointsStatus });
+    await FetcherHandler.checkEveryEndpoints();
   } catch (error) {
     Logger.error({
       name: 'Unexpected error in main',

@@ -38,9 +38,13 @@ class Fetcher {
     if (!expectedStatusCode)
       throw new Error(`No expected status code found for '${endpointName}'`);
 
-    const response = await fetch(url);
+    try {
+      const response = await fetch(url);
 
-    return response.status === expectedStatusCode;
+      return response.status === expectedStatusCode;
+    } catch (e) {
+      return false;
+    }
   };
 
   getEachStatus = async () => {
