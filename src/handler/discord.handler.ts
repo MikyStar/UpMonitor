@@ -104,6 +104,7 @@ class DiscordHandler {
     );
 
     this.logger.error(logWithName);
+    await this.sendToChannel(LOGS_CHANNEL, logWithName);
     await this.sendToChannel(ERRORS_CHANNEL, logWithName);
 
     await this.sendToChannel(channelName, content);

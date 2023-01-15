@@ -4,6 +4,7 @@ import DiscordHandler from './handler/discord.handler';
 import { System } from './core/System';
 import { ConfigUtils } from './utils/config.utils';
 import FetcherHandler from './handler/fetcher.handler';
+import CronHandler from './handler/cron.handler';
 
 ////////////////////////////////////////
 
@@ -40,6 +41,7 @@ const main = async () => {
     ConfigUtils.check(Config);
     await DiscordHandler.setup();
     await FetcherHandler.checkEveryEndpoints();
+    CronHandler.startJobs();
   } catch (error) {
     Logger.error({
       name: 'Unexpected error in main',

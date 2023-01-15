@@ -16,13 +16,10 @@
     "start": "wds src/Main.ts",
     "dev": "wds --watch -c src/Main.ts",
     "lint": "eslint src --ext .ts --fix",
-
     "security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
     "security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
-
     "dependencies:check": "ncu -e 2",
     "dependencies:update": "ncu -u && npm run clear && npm install && npm run security:audit",
-
     "clear": "rm -rf node_modules"
   },
   "devDependencies": {
@@ -39,7 +36,9 @@
     "wds": "^0.13.2"
   },
   "dependencies": {
+    "@types/cron": "^2.0.0",
     "@types/prompts": "^2.0.14",
+    "cron": "^2.2.0",
     "discord.js": "^14.1.2",
     "dotenv": "^16.0.0",
     "moment": "^2.29.3"

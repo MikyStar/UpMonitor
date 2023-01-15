@@ -3,6 +3,10 @@ import DiscordHandler, { IDiscordHandler } from './discord.handler';
 
 ////////////////////////////////////////////////////////////////////////////////
 
+export type IFetcherHandler = FetcherHandler;
+
+////////////////////////////////////////////////////////////////////////////////
+
 class FetcherHandler {
   fetcher: IFetcher;
   discordHandler: IDiscordHandler;
@@ -12,20 +16,24 @@ class FetcherHandler {
     this.discordHandler = discordHandler;
   }
 
-  checkEveryEndpoints = async () => {
-    const eachStatus = await this.fetcher.getEachStatus();
+  isAlive = async (endpointName: string) => {
+    const isAlive = await this.fetcher.isAlive(endpointName);
 
-    eachStatus.forEach(async ({ name, isAlive }) => {
-      if (!isAlive) {
-        await this.discordHandler.error(name, {
-          name: 'Endpoint not alive',
-        });
-      } else {
-        await this.discordHandler.info(name, {
-          name: 'Endpoint alive',
-        });
-      }
-    });
+    if (!isAlive) {
+      await this.discordHandler.error(endpointName, {
+        name: 'Endpoint not alive',
+      });
+    } else {
+      await this.discordHandler.info(endpointName, {
+        name: 'Endpoint alive',
+      });
+    }
+  };
+
+  checkEveryEndpoints = async () => {
+    await Promise.all(
+      this.fetcher.endpointsNames.map((name) => this.isAlive(name)),
+    );
   };
 }
 
