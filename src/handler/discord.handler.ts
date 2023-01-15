@@ -5,6 +5,7 @@ import Logger, { ILogger, LogMessage, LOG_DATE_FORMAT } from '../core/Logger';
 import pkg from '../../package.json';
 import { DateUtils } from '../utils/date.utils';
 import { DiscordChannel } from '../services/DiscordChannel';
+import { AsyncUtils, DEFAULT_MAX_RETRIES } from '../utils/async.utils';
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -55,11 +56,34 @@ class DiscordHandler {
 
   setup = async () => {
     const connect = async (endpoint: EndpointChannel) => {
-      await endpoint.channel.setup();
+      try {
+        await AsyncUtils.retry(
+          () => endpoint.channel.setup(),
+          (retryCbInfos) => {
+            const { tryIndex, error } = retryCbInfos;
 
-      await this.info(endpoint.name, {
-        name: `${pkg.name} bot connected`,
-      });
+            const details = {
+              channelName: endpoint.name,
+              retryNumber: tryIndex,
+              error,
+            };
+
+            if (tryIndex !== DEFAULT_MAX_RETRIES) {
+              this.logger.warn({ name: 'Retrying', details });
+            } else {
+              this.logger.error({ name: 'Error on last retry', details });
+            }
+          },
+        );
+
+        await this.info(endpoint.name, {
+          name: `${pkg.name} bot connected`,
+        });
+      } catch (e) {
+        throw new Error(
+          `Couldn't connect to Discord channel for '${endpoint.name}'`,
+        );
+      }
     };
 
     await Promise.all(this.channels.map(connect));
