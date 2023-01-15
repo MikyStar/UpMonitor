@@ -5,11 +5,11 @@ import DiscordHandler, { IDiscordHandler } from './discord.handler';
 
 class FetcherHandler {
   fetcher: IFetcher;
-  discord: IDiscordHandler;
+  discordHandler: IDiscordHandler;
 
-  constructor(fetcher: IFetcher, discord: IDiscordHandler) {
+  constructor(fetcher: IFetcher, discordHandler: IDiscordHandler) {
     this.fetcher = fetcher;
-    this.discord = discord;
+    this.discordHandler = discordHandler;
   }
 
   checkEveryEndpoints = async () => {
@@ -17,11 +17,11 @@ class FetcherHandler {
 
     eachStatus.forEach(async ({ name, isAlive }) => {
       if (!isAlive) {
-        await this.discord.error(name, {
+        await this.discordHandler.error(name, {
           name: 'Endpoint not alive',
         });
       } else {
-        await this.discord.info(name, {
+        await this.discordHandler.info(name, {
           name: 'Endpoint alive',
         });
       }
