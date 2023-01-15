@@ -1,10 +1,10 @@
 import { Config } from '../../config/config';
 import { EndpointConfig, IConfig } from '../../config/IConfig';
-import { Logger, LogMessage, LOG_DATE_FORMAT } from '../core/Logger';
+import Logger, { ILogger, LogMessage, LOG_DATE_FORMAT } from '../core/Logger';
 
 import pkg from '../../package.json';
 import { DateUtils } from '../utils/date.utils';
-import { DiscordChannel } from './DiscordChannel';
+import { DiscordChannel } from '../services/DiscordChannel';
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -17,13 +17,16 @@ type EndpointChannel = Pick<EndpointConfig, 'name'> & {
   channel: DiscordChannel;
 };
 
-export type IDiscord = Discord;
+export type IDiscordHandler = DiscordHandler;
 
-class Discord {
+class DiscordHandler {
+  logger: ILogger;
   channelNames: string[];
   channels: EndpointChannel[];
 
-  constructor(config: IConfig) {
+  constructor(config: IConfig, logger: ILogger) {
+    this.logger = logger;
+
     this.channelNames = [LOGS_CHANNEL, ERRORS_CHANNEL];
     this.channels = [
       {
@@ -52,11 +55,17 @@ class Discord {
 
   setup = async () => {
     const connect = async (endpoint: EndpointChannel) => {
-      await endpoint.channel.setup();
+      try {
+        await endpoint.channel.setup();
 
-      await this.info(endpoint.name, {
-        name: `${pkg.name} bot connected`,
-      });
+        await this.info(endpoint.name, {
+          name: `${pkg.name} bot connected`,
+        });
+      } catch (e) {
+        throw new Error(
+          `Couldn't connect to Discord channel for '${endpoint.name}': ${e}`,
+        );
+      }
     };
 
     await Promise.all(this.channels.map(connect));
@@ -75,7 +84,7 @@ class Discord {
       content,
     );
 
-    Logger.log(logWithName);
+    this.logger.log(logWithName);
     await this.sendToChannel(LOGS_CHANNEL, logWithName);
 
     await this.sendToChannel(channelName, content);
@@ -94,7 +103,7 @@ class Discord {
       content,
     );
 
-    Logger.error(logWithName);
+    this.logger.error(logWithName);
     await this.sendToChannel(ERRORS_CHANNEL, logWithName);
 
     await this.sendToChannel(channelName, content);
@@ -130,4 +139,4 @@ class Discord {
   };
 }
 
-export default new Discord(Config);
+export default new DiscordHandler(Config, Logger);

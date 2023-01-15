@@ -14,15 +14,17 @@ export interface LogMessage {
   details?: any;
 }
 
-export type LogLevel = 'error' | 'info';
+export type ILogger = Logger;
+
+export type LogLevel = 'error' | 'warning' | 'info';
 
 ////////////////////////////////////////
 
-export namespace Logger {
-  export const formatMessage = (log: LogMessage) => {
+class Logger {
+  formatMessage = (log: LogMessage) => {
     const level = log.level || 'info';
 
-    if (Object.keys({ ...log.details }).length === 0) delete log.details;
+    if (log?.details === undefined) delete log.details;
 
     /////
 
@@ -44,8 +46,8 @@ export namespace Logger {
   /**
    * Format and print to stdout, sets the level to 'info'
    */
-  export const log = (log: LogMessage) => {
-    const formatedJSON = formatMessage({
+  log = (log: LogMessage) => {
+    const formatedJSON = this.formatMessage({
       ...log,
       level: 'info',
     });
@@ -54,10 +56,22 @@ export namespace Logger {
   };
 
   /**
+   * Format and print to stdout, sets the level to 'info'
+   */
+  warn = (log: LogMessage) => {
+    const formatedJSON = this.formatMessage({
+      ...log,
+      level: 'warning',
+    });
+
+    console.warn(formatedJSON);
+  };
+
+  /**
    * Format and print to stderr, sets the level to 'error'
    */
-  export const error = (log: LogMessage) => {
-    const formatedJSON = formatMessage({
+  error = (log: LogMessage) => {
+    const formatedJSON = this.formatMessage({
       ...log,
       level: 'error',
     });
@@ -65,3 +79,5 @@ export namespace Logger {
     console.error(formatedJSON);
   };
 }
+
+export default new Logger();
