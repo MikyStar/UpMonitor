@@ -5,7 +5,6 @@ import Logger, { ILogger, LogMessage, LOG_DATE_FORMAT } from '../core/Logger';
 import pkg from '../../package.json';
 import { DateUtils } from '../utils/date.utils';
 import { DiscordChannel } from '../services/DiscordChannel';
-import { AsyncUtils, DEFAULT_MAX_RETRIES } from '../utils/async.utils';
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -34,13 +33,13 @@ class DiscordHandler {
         name: LOGS_CHANNEL,
         channel: new DiscordChannel(config.discordToken, config.logsChannelID),
       },
-      {
-        name: ERRORS_CHANNEL,
-        channel: new DiscordChannel(
-          config.discordToken,
-          config.errorsChannelID,
-        ),
-      },
+      // {
+      //   name: ERRORS_CHANNEL,
+      //   channel: new DiscordChannel(
+      //     config.discordToken,
+      //     config.errorsChannelID,
+      //   ),
+      // },
     ];
 
     config.endpointsConfigs.forEach((endpoint) => {
@@ -57,24 +56,7 @@ class DiscordHandler {
   setup = async () => {
     const connect = async (endpoint: EndpointChannel) => {
       try {
-        await AsyncUtils.retry(
-          () => endpoint.channel.setup(),
-          (retryCbInfos) => {
-            const { tryIndex, error } = retryCbInfos;
-
-            const details = {
-              channelName: endpoint.name,
-              retryNumber: tryIndex,
-              error,
-            };
-
-            if (tryIndex !== DEFAULT_MAX_RETRIES) {
-              this.logger.warn({ name: 'Retrying', details });
-            } else {
-              this.logger.error({ name: 'Error on last retry', details });
-            }
-          },
-        );
+        await endpoint.channel.setup();
 
         await this.info(endpoint.name, {
           name: `${pkg.name} bot connected`,

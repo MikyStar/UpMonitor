@@ -24,7 +24,7 @@ class Logger {
   formatMessage = (log: LogMessage) => {
     const level = log.level || 'info';
 
-    if (Object.keys({ ...log.details }).length === 0) delete log.details;
+    if (log?.details === undefined) delete log.details;
 
     /////
 

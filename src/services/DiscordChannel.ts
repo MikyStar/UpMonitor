@@ -26,7 +26,6 @@ export class DiscordChannel {
     });
 
     this.token = token;
-
     this.channelID = channelID;
   }
 
