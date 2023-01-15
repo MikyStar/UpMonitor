@@ -33,13 +33,13 @@ class DiscordHandler {
         name: LOGS_CHANNEL,
         channel: new DiscordChannel(config.discordToken, config.logsChannelID),
       },
-      // {
-      //   name: ERRORS_CHANNEL,
-      //   channel: new DiscordChannel(
-      //     config.discordToken,
-      //     config.errorsChannelID,
-      //   ),
-      // },
+      {
+        name: ERRORS_CHANNEL,
+        channel: new DiscordChannel(
+          config.discordToken,
+          config.errorsChannelID,
+        ),
+      },
     ];
 
     config.endpointsConfigs.forEach((endpoint) => {
@@ -63,7 +63,7 @@ class DiscordHandler {
         });
       } catch (e) {
         throw new Error(
-          `Couldn't connect to Discord channel for '${endpoint.name}'`,
+          `Couldn't connect to Discord channel for '${endpoint.name}': ${e}`,
         );
       }
     };
