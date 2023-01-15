@@ -1,3 +1,5 @@
 node_modules
 
+up-monitor.logs
+
 config/config.ts

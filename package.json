@@ -13,7 +13,13 @@
     "start": "wds src/Main.ts",
     "dev": "wds --watch -c src/Main.ts",
 
-    "lint": "eslint src --ext .ts --fix",
+    "daemon:start": "pm2 start --name up-monitor --log up-monitor.logs --interpreter $(which pnpm) --interpreter-args start src/Main.ts",
+    "daemon:stop": "pm2 stop up-monitor",
+    "daemon:resume": "pm2 restart up-monitor",
+    "daemon:delete": "pm2 delete up-monitor",
+    "daemon:logs": "pm2 logs up-monitor",
+    "daemon:infos": "pm2 monitor up-monitor",
+
 
     "security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
     "security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
@@ -21,6 +27,7 @@
     "dependencies:check": "ncu -e 2",
     "dependencies:update": "ncu -u && npm run clear && npm install && npm run security:audit",
 
+    "lint": "eslint src --ext .ts --fix",
     "clear": "rm -rf node_modules"
   },
   "devDependencies": {
