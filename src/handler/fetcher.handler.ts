@@ -1,13 +1,13 @@
 import Fetcher, { IFetcher } from '../core/Fetcher';
-import Discord, { IDiscord } from '../services/Discord';
+import DiscordHandler, { IDiscordHandler } from './discord.handler';
 
 ////////////////////////////////////////////////////////////////////////////////
 
 class FetcherHandler {
   fetcher: IFetcher;
-  discord: IDiscord;
+  discord: IDiscordHandler;
 
-  constructor(fetcher: IFetcher, discord: IDiscord) {
+  constructor(fetcher: IFetcher, discord: IDiscordHandler) {
     this.fetcher = fetcher;
     this.discord = discord;
   }
@@ -29,4 +29,4 @@ class FetcherHandler {
   };
 }
 
-export default new FetcherHandler(Fetcher, Discord);
+export default new FetcherHandler(Fetcher, DiscordHandler);

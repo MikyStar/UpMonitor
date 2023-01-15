@@ -1,5 +1,5 @@
 import { IConfig } from '../../config/IConfig';
-import { ERRORS_CHANNEL, LOGS_CHANNEL } from '../services/Discord';
+import { ERRORS_CHANNEL, LOGS_CHANNEL } from '../handler/discord.handler';
 
 ////////////////////////////////////////
 
