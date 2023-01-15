@@ -1,10 +1,10 @@
 import { Config } from '../config/config';
 import Logger from './core/Logger';
 import DiscordHandler from './handler/discord.handler';
-import { System } from './core/System';
 import { ConfigUtils } from './utils/config.utils';
 import FetcherHandler from './handler/fetcher.handler';
 import CronHandler from './handler/cron.handler';
+import { SystemUtils } from './utils/system.utils';
 
 ////////////////////////////////////////
 
@@ -14,7 +14,7 @@ process.on('uncaughtException', (error) => {
     details: error,
   });
 
-  System.exit(-1);
+  SystemUtils.exit(-1);
 });
 
 process.on('unhandledRejection', (error) => {
@@ -23,13 +23,13 @@ process.on('unhandledRejection', (error) => {
     details: error,
   });
 
-  System.exit(-1);
+  SystemUtils.exit(-1);
 });
 
 process.on('SIGINT', () => {
   Logger.log({ name: 'Received SIGINT' });
 
-  System.exit(-1);
+  SystemUtils.exit(-1);
 });
 
 ////////////////////////////////////////
@@ -48,7 +48,7 @@ const main = async () => {
       details: error,
     });
 
-    System.exit(-1);
+    SystemUtils.exit(-1);
   }
 };
 
