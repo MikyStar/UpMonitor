@@ -13,7 +13,7 @@
     "start": "wds src/Main.ts",
     "dev": "wds --watch -c src/Main.ts",
 
-    "daemon:start": "pm2 start --name up-monitor --log up-monitor.logs --interpreter $(which pnpm) --interpreter-args start src/Main.ts",
+    "daemon:start": "pm2 start --name up-monitor --log up-monitor.log --interpreter $(which pnpm) --interpreter-args start src/Main.ts",
     "daemon:stop": "pm2 stop up-monitor",
     "daemon:resume": "pm2 restart up-monitor",
     "daemon:delete": "pm2 delete up-monitor",

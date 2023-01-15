@@ -28,6 +28,8 @@ pnpm i
 
 ```sh
 pnpm start
+# OR run with pm2, check npm scripts for more
+pnpm daemon:start
 ```
 
 ## Config file
