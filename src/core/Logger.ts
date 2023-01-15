@@ -16,7 +16,7 @@ export interface LogMessage {
 
 export type ILogger = Logger;
 
-export type LogLevel = 'error' | 'info';
+export type LogLevel = 'error' | 'warning' | 'info';
 
 ////////////////////////////////////////
 
@@ -53,6 +53,18 @@ class Logger {
     });
 
     console.log(formatedJSON);
+  };
+
+  /**
+   * Format and print to stdout, sets the level to 'info'
+   */
+  warn = (log: LogMessage) => {
+    const formatedJSON = this.formatMessage({
+      ...log,
+      level: 'warning',
+    });
+
+    console.warn(formatedJSON);
   };
 
   /**
