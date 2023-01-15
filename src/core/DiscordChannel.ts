@@ -1,7 +1,6 @@
 import { Client, TextChannel } from 'discord.js';
-import { LogMessage } from './Logger';
-
 import { StringUtils } from '../utils/string.utils';
+import { LogMessage } from './Logger';
 
 ////////////////////////////////////////////////////////////////////////////////
 
