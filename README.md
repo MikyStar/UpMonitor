@@ -39,7 +39,7 @@ pnpm daemon:start
 ```ts
 import { IConfig } from './IConfig'; // Provides IntelliSense
 
-export const exampleConfig: IConfig = {
+export const Config: IConfig = {
   discordToken: 'Token',
   errorsChannelID: 'Global Discord errors channel ID',
   logsChannelID: 'Global Discord logs channel ID',

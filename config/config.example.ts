@@ -5,6 +5,7 @@ import { IConfig } from './IConfig';
 /**
  * You should make your own file named 'config.ts' based on this one
  * under this 'config' directory
+ * You have to rename this variable 'Config' in your own file too
  *
  * Check out the interface 'IConfig' for infos about optional types
  */
