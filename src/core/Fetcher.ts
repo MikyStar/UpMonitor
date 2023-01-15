@@ -1,6 +1,8 @@
 import { Config } from '../../config/config';
 import { EndpointConfig, IConfig } from '../../config/IConfig';
 
+import pkg from '../../package.json';
+
 ////////////////////////////////////////////////////////////////////////////////
 
 type EndpointUrl = Pick<EndpointConfig, 'name' | 'url' | 'expectedStatusCode'>;
@@ -39,7 +41,10 @@ class Fetcher {
       throw new Error(`No expected status code found for '${endpointName}'`);
 
     try {
-      const response = await fetch(url);
+      const headers = new Headers({
+        'User-Agent': `${pkg.name} bot`,
+      });
+      const response = await fetch(url, { headers });
 
       return response.status === expectedStatusCode;
     } catch (e) {
