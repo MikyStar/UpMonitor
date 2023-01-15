@@ -5,6 +5,8 @@ import { EndpointConfig, IConfig } from '../../config/IConfig';
 
 type EndpointUrl = Pick<EndpointConfig, 'name' | 'url' | 'expectedStatusCode'>;
 
+export type IFetcher = Fetcher;
+
 class Fetcher {
   endpointsNames: string[];
   endpointsUrls: EndpointUrl[];

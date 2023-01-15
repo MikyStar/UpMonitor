@@ -17,6 +17,8 @@ type EndpointChannel = Pick<EndpointConfig, 'name'> & {
   channel: DiscordChannel;
 };
 
+export type IDiscord = Discord;
+
 class Discord {
   channelNames: string[];
   channels: EndpointChannel[];

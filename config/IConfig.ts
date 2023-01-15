@@ -14,9 +14,6 @@ export type EndpointConfig = {
   cronJobSchedule: string;
 
   retry?: Retry;
-
-  onSuccess?: VoidFunction;
-  onError?: (statusCode: number, content?: string) => void;
 };
 
 export type Retry = {
