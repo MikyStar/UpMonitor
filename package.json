@@ -4,9 +4,6 @@
   "description": "Simple server running CRON jobs to ping endpoints and alert the down ones on endpoints",
   "author": "Mike AUBENAS",
   "license": "ISC",
-  "bin": {
-    "task": "./bin/cli.js"
-  },
   "main": "src/Main.ts",
   "repository": {
     "type": "git",
@@ -15,11 +12,15 @@
   "scripts": {
     "start": "wds src/Main.ts",
     "dev": "wds --watch -c src/Main.ts",
+
     "lint": "eslint src --ext .ts --fix",
+
     "security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
     "security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",
+
     "dependencies:check": "ncu -e 2",
     "dependencies:update": "ncu -u && npm run clear && npm install && npm run security:audit",
+
     "clear": "rm -rf node_modules"
   },
   "devDependencies": {
