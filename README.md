@@ -29,7 +29,7 @@ pnpm i
 ```sh
 pnpm start
 # OR run with pm2, check npm scripts for more
-pnpm daemon:start # Auto rerurn + scheduled restart twice a day to prevent memory leaks
+pnpm daemon:start
 ```
 
 ## Config file
