@@ -1,7 +1,7 @@
 import { Config } from '../../config/config';
 import { IConfig } from '../../config/IConfig';
 import Fetcher, { IFetcher } from '../core/Fetcher';
-import Logger, { ILogger } from '../core/Logger';
+import Logger, { ILogger, LogMessage } from '../core/Logger';
 import { SystemUtils } from '../utils/system.utils';
 import DiscordHandler, { IDiscordHandler } from './discord.handler';
 
@@ -52,18 +52,30 @@ class FetcherHandler {
   };
 
   private isAlive = async (endpointName: string) => {
-    const status = await this.fetcher.ping(endpointName);
-    const { expectedStatusCode } = this.config.endpointsConfigs.find(
-      (conf) => conf.name === endpointName,
-    );
+    let isAlive, status, error;
 
-    const isAlive = status === expectedStatusCode;
+    try {
+      status = await this.fetcher.ping(endpointName);
+      const { expectedStatusCode } = this.config.endpointsConfigs.find(
+        (conf) => conf.name === endpointName,
+      );
+
+      isAlive = status === expectedStatusCode;
+    } catch (e) {
+      isAlive = false;
+      status = 'Error fetching';
+      error = e;
+    }
 
     if (!isAlive) {
-      await this.discordHandler.error(endpointName, {
+      const log: LogMessage = {
         name: 'Endpoint not alive',
         details: { status },
-      });
+      };
+
+      if (error) log.details = { ...log.details, error };
+
+      await this.discordHandler.error(endpointName, log);
     } else {
       await this.discordHandler.info(endpointName, {
         name: 'Endpoint alive',
