@@ -4,6 +4,13 @@ Run CRON jobs to notify on Discord if an HTTP endoint is down
 
 ## Setup
 
+0. Requirements
+
+- [NodeJS](https://nodejs.org/en/)
+- [PNPM](https://pnpm.io/en/)
+- [WDS](https://github.com/gadget-inc/wds)
+- [PM2](https://pm2.keymetrics.io/) _(Optional)_
+
 1. Clone the project
 
 ```sh
