@@ -22,7 +22,7 @@ class CronHandler {
 
     this.cronJobs = config.endpointsConfigs.map((conf) => {
       return new CronJob(conf.cronJobSchedule, async () => {
-        await this.fetcherHandler.isAlive(conf.name);
+        await this.fetcherHandler.checkLiveliness(conf.name);
       });
     });
   }
