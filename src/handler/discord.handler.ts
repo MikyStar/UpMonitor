@@ -1,6 +1,11 @@
 import { Config } from '../../config/config';
 import { EndpointConfig, IConfig } from '../../config/IConfig';
-import Logger, { ILogger, LogMessage, LOG_DATE_FORMAT } from '../core/Logger';
+import Logger, {
+  ILogger,
+  LogMessage,
+  LOG_DATE_FORMAT,
+  NodeEnv,
+} from '../core/Logger';
 
 import pkg from '../../package.json';
 import { DateUtils } from '../utils/date.utils';
@@ -75,17 +80,14 @@ class DiscordHandler {
     if (!content.level) content.level = 'info';
     if (content?.level !== 'info') throw new Error('Bad log level');
 
-    if (!content.timestamp) {
-      content.timestamp = DateUtils.getFormatedTimeStamp(LOG_DATE_FORMAT);
-    }
-
-    const logWithName = this.appendChannelNameToLogDetails(
+    content = this.expandContent(content);
+    const logWithChannelName = this.appendChannelNameToLogDetails(
       channelName,
       content,
     );
 
-    this.logger.log(logWithName);
-    await this.sendToChannel(LOGS_CHANNEL, logWithName);
+    this.logger.log(logWithChannelName);
+    await this.sendToChannel(LOGS_CHANNEL, logWithChannelName);
 
     await this.sendToChannel(channelName, content);
   };
@@ -94,18 +96,15 @@ class DiscordHandler {
     if (!content.level) content.level = 'error';
     if (content?.level !== 'error') throw new Error('Bad log level');
 
-    if (!content.timestamp) {
-      content.timestamp = DateUtils.getFormatedTimeStamp(LOG_DATE_FORMAT);
-    }
-
-    const logWithName = this.appendChannelNameToLogDetails(
+    content = this.expandContent(content);
+    const logWithChannelName = this.appendChannelNameToLogDetails(
       channelName,
       content,
     );
 
-    this.logger.error(logWithName);
-    await this.sendToChannel(LOGS_CHANNEL, logWithName);
-    await this.sendToChannel(ERRORS_CHANNEL, logWithName);
+    this.logger.error(logWithChannelName);
+    await this.sendToChannel(LOGS_CHANNEL, logWithChannelName);
+    await this.sendToChannel(ERRORS_CHANNEL, logWithChannelName);
 
     await this.sendToChannel(channelName, content);
   };
@@ -137,6 +136,19 @@ class DiscordHandler {
         channelName,
       },
     };
+  };
+
+  private expandContent = (content: LogMessage): LogMessage => {
+    const toReturn = { ...content };
+    if (!toReturn.timestamp) {
+      toReturn.timestamp = DateUtils.getFormatedTimeStamp(LOG_DATE_FORMAT);
+    }
+
+    if (!toReturn.env) {
+      toReturn.env = process.env.NODE_ENV as NodeEnv;
+    }
+
+    return toReturn;
   };
 }
 
