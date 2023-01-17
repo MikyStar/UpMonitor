@@ -2,6 +2,7 @@ import { Config } from '../../config/config';
 import { IConfig } from '../../config/IConfig';
 import Fetcher, { IFetcher } from '../core/Fetcher';
 import Logger, { ILogger } from '../core/Logger';
+import { SystemUtils } from '../utils/system.utils';
 import DiscordHandler, { IDiscordHandler } from './discord.handler';
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,11 +33,14 @@ class FetcherHandler {
     const isAlive = await this.isAlive(endpointName);
 
     if (!isAlive) {
+      const waitSeconds = 30;
+
       this.logger.warn({
-        name: 'Retrying',
+        name: `Retrying in ${waitSeconds} seconds`,
         details: { channelName: endpointName },
       });
 
+      await SystemUtils.wait(waitSeconds);
       await this.isAlive(endpointName);
     }
   };
