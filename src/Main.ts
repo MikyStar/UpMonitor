@@ -38,9 +38,12 @@ const main = async () => {
   try {
     Logger.log({ name: 'Starting Server' });
 
+    // Blocking methods
     ConfigUtils.check(Config);
     await DiscordHandler.setup();
-    await FetcherHandler.checkEveryEndpoints();
+
+    // Concurrent methods
+    FetcherHandler.checkEveryEndpoints();
     CronHandler.startJobs();
   } catch (error) {
     Logger.error({
