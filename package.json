@@ -1,6 +1,6 @@
 {
   "name": "up-monitor",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Simple server running CRON jobs to ping endpoints and alert the down ones on endpoints",
   "author": "Mike AUBENAS",
   "license": "ISC",
@@ -11,7 +11,7 @@
   },
   "scripts": {
     "start": "wds src/Main.ts",
-    "dev": "NODE_ENV=dev wds --watch -c src/Main.ts",
+    "dev": "NODE_ENV=dev pm2 start --name up-monitor-dev --log up-monitor.log --interpreter $(which pnpm) --interpreter-args start src/Main.ts --watch --no-daemon",
 
     "daemon:start": "NODE_ENV=production pm2 start --name up-monitor --log up-monitor.log --interpreter $(which pnpm) --interpreter-args start src/Main.ts",
     "daemon:stop": "pm2 stop up-monitor",

@@ -28,7 +28,7 @@ class Fetcher {
     });
   }
 
-  isAlive = async (endpointName: string): Promise<boolean> => {
+  ping = async (endpointName: string): Promise<number> => {
     if (!this.endpointsNames.includes(endpointName))
       throw new Error(`Endpoint name '${endpointName}' not in config`);
 
@@ -40,39 +40,12 @@ class Fetcher {
     if (!expectedStatusCode)
       throw new Error(`No expected status code found for '${endpointName}'`);
 
-    try {
-      const headers = new Headers({
-        'User-Agent': `${pkg.name} bot`,
-      });
-      const response = await fetch(url, { headers });
-
-      return response.status === expectedStatusCode;
-    } catch (e) {
-      return false;
-    }
-  };
-
-  getEachStatus = async () => {
-    const eachStatus = await Promise.all(
-      this.endpointsNames.map(async (name) => {
-        return {
-          name,
-          isAlive: await this.isAlive(name),
-        };
-      }),
-    );
-
-    return eachStatus;
-  };
-
-  areAllAlive = async () => {
-    const eachStatus = await this.getEachStatus();
-
-    eachStatus.forEach(({ isAlive }) => {
-      if (!isAlive) return false;
+    const headers = new Headers({
+      'User-Agent': `${pkg.name} bot`,
     });
+    const response = await fetch(url, { headers });
 
-    return true;
+    return response.status;
   };
 }
 
