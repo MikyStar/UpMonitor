@@ -1,6 +1,4 @@
 node_modules
-
-up-monitor.log
-up-monitor-dev.log
+logs
 
 config/config.ts
