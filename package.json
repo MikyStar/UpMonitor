@@ -21,7 +21,7 @@
     "daemon:resume": "pm2 restart up-monitor-prod",
     "daemon:kill": "pm2 delete up-monitor-prod",
     "daemon:logs": "pm2 logs up-monitor-prod",
-    "daemon:infos:more": "pm2 describe up-monitor-prod",
+    "daemon:describe": "pm2 describe up-monitor-prod",
 
     "pm2:infos": "pm2 monitor up-monitor",
 
