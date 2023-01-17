@@ -1,6 +1,6 @@
 {
   "name": "up-monitor",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Simple server running CRON jobs to ping endpoints and alert the down ones on endpoints",
   "author": "Mike AUBENAS",
   "license": "ISC",
@@ -11,16 +11,19 @@
   },
   "scripts": {
     "start": "wds src/Main.ts",
-    "dev": "NODE_ENV=dev wds --watch -c src/Main.ts",
 
-    "daemon:start": "NODE_ENV=production pm2 start --name up-monitor --log up-monitor.log --interpreter $(which pnpm) --interpreter-args start src/Main.ts",
-    "daemon:stop": "pm2 stop up-monitor",
-    "daemon:resume": "pm2 restart up-monitor",
-    "daemon:delete": "pm2 delete up-monitor",
-    "daemon:logs": "pm2 logs up-monitor",
-    "daemon:infos": "pm2 monitor up-monitor",
-    "daemon:infos:more": "pm2 describe up-monitor",
+    "dev:start": "NODE_ENV=dev pm2 start --name up-monitor-dev --log logs/up-monitor-dev.log --interpreter $(which pnpm) --interpreter-args start src/Main.ts --watch && pnpm dev:logs && pnpm dev:kill",
+    "dev:kill": "pm2 delete up-monitor-dev",
+    "dev:logs": "pm2 logs up-monitor-dev",
 
+    "daemon:start": "NODE_ENV=production pm2 start --name up-monitor-prod --log logs/up-monitor-prod.log --interpreter $(which pnpm) --interpreter-args start src/Main.ts",
+    "daemon:stop": "pm2 stop up-monitor-prod",
+    "daemon:resume": "pm2 restart up-monitor-prod",
+    "daemon:kill": "pm2 delete up-monitor-prod",
+    "daemon:logs": "pm2 logs up-monitor-prod",
+    "daemon:infos:more": "pm2 describe up-monitor-prod",
+
+    "pm2:infos": "pm2 monitor up-monitor",
 
     "security:audit": "npm audit --production --audit-level=moderate --registry=https://registry.npmjs.org",
     "security:fix": "npm audit fix --production --audit-level=moderate --registry=https://registry.npmjs.org",

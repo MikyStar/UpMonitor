@@ -7,16 +7,18 @@ export const LOG_DATE_FORMAT = 'DD/MM/YYYY HH:mm:ss.SSS';
 
 ////////////////////////////////////////
 
-export interface LogMessage {
+export type LogMessage = {
   name: string;
   level?: LogLevel;
   timestamp?: string;
   details?: any;
-}
+  env?: NodeEnv;
+};
 
 export type ILogger = Logger;
 
 export type LogLevel = 'error' | 'warning' | 'info';
+export type NodeEnv = 'dev' | 'production';
 
 ////////////////////////////////////////
 
@@ -32,6 +34,7 @@ class Logger {
       name: log.name,
       level,
       timestamp: DateUtils.getFormatedTimeStamp(LOG_DATE_FORMAT),
+      env: process.env.NODE_ENV as NodeEnv,
       ...log,
     };
 
