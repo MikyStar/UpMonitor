@@ -38,6 +38,8 @@ pnpm start
 pnpm daemon:start
 ```
 
+`WARNING:` Discord connection at startup often fails, hence using PM2 for restarts
+
 ## Config file
 
 > You should make your own configuration file at _config/config.ts_ based on _config/config.example.ts_
