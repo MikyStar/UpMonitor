@@ -47,7 +47,7 @@ pnpm daemon:start
 ```ts
 import { IConfig } from './IConfig'; // Provides IntelliSense
 
-export const Config: IConfig = {
+export const config: IConfig = {
   discordToken: 'Token',
   errorsChannelID: 'Global Discord errors channel ID',
   logsChannelID: 'Global Discord logs channel ID',
@@ -59,6 +59,12 @@ export const Config: IConfig = {
       expectedStatusCode: 200,
       channelID: 'Discord Channel ID',
       cronJobSchedule: '15 14 1 * *', // At 14:15 on day-of-month 1
+
+      // Optional
+      retry: {
+        times: 2,
+        waitSeconds: 3 * 60,
+      }
     },
   ],
 };

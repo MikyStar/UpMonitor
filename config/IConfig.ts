@@ -17,6 +17,6 @@ export type EndpointConfig = {
 };
 
 export type Retry = {
-  number: number;
-  wait: string;
+  times: number;
+  waitSeconds: number;
 };
