@@ -89,3 +89,7 @@ export const config: IConfig = {
   - Open URL and follow the invite process
   - Go to the channel's settings in Discord App
   - Add member and toggle it's permissions so that it can send messages
+
+## Tasks
+
+Using [CLI-Manager](https://github.com/MikyStar/CLI-Manager) for task handling.
