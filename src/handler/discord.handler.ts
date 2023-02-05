@@ -1,10 +1,11 @@
 import { EndpointConfig } from '../../config/IConfig';
-import { ILogger, LogMessage, LOG_DATE_FORMAT, NodeEnv } from '../core/Logger';
+import { ILogger, LogMessage, LOG_DATE_FORMAT } from '../core/Logger';
 
 import pkg from '../../package.json';
 import { DateUtils } from '../utils/date.utils';
 import { DiscordChannel } from '../core/DiscordChannel';
 import Config from '../core/Config';
+import { SystemUtils } from '../utils/system.utils';
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -140,7 +141,7 @@ export default class DiscordHandler {
     }
 
     if (!toReturn.env) {
-      toReturn.env = process.env.NODE_ENV as NodeEnv;
+      toReturn.env = SystemUtils.getEnv();
     }
 
     return toReturn;
