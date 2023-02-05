@@ -20,3 +20,8 @@ export type Retry = {
   times: number;
   waitSeconds: number;
 };
+
+export const DEFAULT_RETRY: Retry = {
+  times: 2,
+  waitSeconds: 30,
+};

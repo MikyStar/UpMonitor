@@ -60,10 +60,10 @@ export const config: IConfig = {
       channelID: 'Discord Channel ID',
       cronJobSchedule: '15 14 1 * *', // At 14:15 on day-of-month 1
 
-      // Optional
+      // Optional, here are the default values
       retry: {
         times: 2,
-        waitSeconds: 3 * 60,
+        waitSeconds: 30,
       }
     },
   ],

@@ -1,7 +1,8 @@
 import Config from '../core/Config';
-import { IFetcher } from '../core/Fetcher';
+import pkg from '../../package.json';
 import { ILogger, LogMessage } from '../core/Logger';
-import { SystemUtils } from '../utils/system.utils';
+import { AsyncUtils, OnFailureProps } from '../utils/async.utils';
+import { DEFAULT_RETRY } from '../../config/IConfig';
 import { IDiscordHandler } from './discord.handler';
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -11,42 +12,88 @@ export type IFetcherHandler = FetcherHandler;
 ////////////////////////////////////////////////////////////////////////////////
 
 export default class FetcherHandler {
-  fetcher: IFetcher;
   discordHandler: IDiscordHandler;
   config: Config;
   logger: ILogger;
 
+  //////////
+
   constructor(
-    fetcher: IFetcher,
     discordHandler: IDiscordHandler,
     config: Config,
     logger: ILogger,
   ) {
-    this.fetcher = fetcher;
     this.discordHandler = discordHandler;
     this.config = config;
     this.logger = logger;
   }
 
-  checkLiveliness = async (endpointName: string) => {
-    const isAlive = await this.isAlive(endpointName);
+  //////////
 
-    if (!isAlive) {
-      const waitSeconds = 30;
+  ping = async (endpointName: string): Promise<number> => {
+    const { url, expectedStatusCode } =
+      this.config.findEndpointByName(endpointName);
+
+    if (!url) throw new Error(`No URL found for '${endpointName}'`);
+    if (!expectedStatusCode)
+      throw new Error(`No expected status code found for '${endpointName}'`);
+
+    const headers = new Headers({
+      'User-Agent': `${pkg.name} bot`,
+    });
+    const response = await fetch(url, { headers });
+
+    return response.status;
+  };
+
+  /**
+   * Also retries according to user's config or default if endpoint not alive
+   */
+  checkLiveliness = async (endpointName: string) => {
+    const { retry } = this.config.findEndpointByName(endpointName);
+
+    const maxRetryTimes = retry?.times || DEFAULT_RETRY.times;
+    const waitSeconds = retry?.waitSeconds || DEFAULT_RETRY.waitSeconds;
+
+    const handleChecking = async () => {
+      const isEndpointAlive = await this.isAlive(endpointName);
+
+      // As the AsyncUtils.retry function needs a rejection to make a retry
+      if (!isEndpointAlive) {
+        throw new Error();
+      }
+    };
+
+    const onFailure = async ({ tryIndex }: OnFailureProps) => {
+      const isLastTry = tryIndex === maxRetryTimes;
 
       this.logger.warn({
-        name: `Retrying in ${waitSeconds} seconds`,
-        details: { channelName: endpointName },
+        name: `Try n°${tryIndex}/${maxRetryTimes} failed, ${
+          !isLastTry
+            ? `next retry in ${waitSeconds} seconds`
+            : 'endpoint might be unreachable'
+        }`,
+        details: logDetails,
       });
+    };
 
-      await SystemUtils.wait(waitSeconds);
-      await this.isAlive(endpointName);
-    }
+    const logDetails = { channelName: endpointName };
+
+    //////////
+
+    try {
+      await AsyncUtils.retry(
+        handleChecking,
+        onFailure,
+        maxRetryTimes,
+        waitSeconds,
+      );
+    } catch (e) {}
   };
 
   checkEveryEndpoints = async () => {
     await Promise.all(
-      this.fetcher.config.endpointsConfigs.map(({ name }) =>
+      this.config.endpointsConfigs.map(({ name }) =>
         this.checkLiveliness(name),
       ),
     );
@@ -54,11 +101,10 @@ export default class FetcherHandler {
 
   private isAlive = async (endpointName: string) => {
     let isAlive, status, error;
+    const { expectedStatusCode } = this.config.findEndpointByName(endpointName);
 
     try {
-      status = await this.fetcher.ping(endpointName);
-      const { expectedStatusCode } =
-        this.config.findEndpointByName(endpointName);
+      status = await this.ping(endpointName);
 
       isAlive = status === expectedStatusCode;
     } catch (e) {
@@ -70,7 +116,7 @@ export default class FetcherHandler {
     if (!isAlive) {
       const log: LogMessage = {
         name: 'Endpoint not alive',
-        details: { status },
+        details: { status, expected: expectedStatusCode },
       };
 
       if (error) log.details = { ...log.details, error };
