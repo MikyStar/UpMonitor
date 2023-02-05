@@ -66,12 +66,13 @@ export default class FetcherHandler {
 
     const onFailure = async ({ tryIndex }: OnFailureProps) => {
       const isLastTry = tryIndex === maxRetryTimes;
-      const msg = `Try n°${tryIndex}/${maxRetryTimes} failed${
-        !isLastTry ? `, next retry in ${waitSeconds} seconds` : ''
-      }`;
 
       this.logger.warn({
-        name: msg,
+        name: `Try n°${tryIndex}/${maxRetryTimes} failed, ${
+          !isLastTry
+            ? `next retry in ${waitSeconds} seconds`
+            : 'endpoint might be unreachable'
+        }`,
         details: logDetails,
       });
     };
@@ -87,12 +88,7 @@ export default class FetcherHandler {
         maxRetryTimes,
         waitSeconds,
       );
-    } catch (e) {
-      this.logger.error({
-        name: 'Endpoint failed to respond',
-        details: logDetails,
-      });
-    }
+    } catch (e) {}
   };
 
   checkEveryEndpoints = async () => {
