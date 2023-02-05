@@ -1,6 +1,6 @@
 {
   "name": "up-monitor",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Simple server running CRON jobs to ping endpoints and alert the down ones on endpoints",
   "author": "Mike AUBENAS",
   "license": "ISC",
