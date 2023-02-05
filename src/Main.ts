@@ -5,7 +5,6 @@ import FetcherHandler from './handler/fetcher.handler';
 import CronHandler from './handler/cron.handler';
 import { SystemUtils } from './utils/system.utils';
 import Config from './core/Config';
-import Fetcher from './core/Fetcher';
 
 ////////////////////////////////////////
 
@@ -45,12 +44,7 @@ const main = async () => {
 
     const config = new Config(userConfig);
     const discordHandler = new DiscordHandler(config, logger);
-    const fetcherHandler = new FetcherHandler(
-      new Fetcher(config),
-      discordHandler,
-      config,
-      logger,
-    );
+    const fetcherHandler = new FetcherHandler(discordHandler, config, logger);
     const cronHandler = new CronHandler(fetcherHandler, config, logger);
 
     // Blocking methods

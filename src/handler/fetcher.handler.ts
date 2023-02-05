@@ -1,5 +1,5 @@
 import Config from '../core/Config';
-import { IFetcher } from '../core/Fetcher';
+import pkg from '../../package.json';
 import { ILogger, LogMessage } from '../core/Logger';
 import { SystemUtils } from '../utils/system.utils';
 import { IDiscordHandler } from './discord.handler';
@@ -11,22 +11,39 @@ export type IFetcherHandler = FetcherHandler;
 ////////////////////////////////////////////////////////////////////////////////
 
 export default class FetcherHandler {
-  fetcher: IFetcher;
   discordHandler: IDiscordHandler;
   config: Config;
   logger: ILogger;
 
+  //////////
+
   constructor(
-    fetcher: IFetcher,
     discordHandler: IDiscordHandler,
     config: Config,
     logger: ILogger,
   ) {
-    this.fetcher = fetcher;
     this.discordHandler = discordHandler;
     this.config = config;
     this.logger = logger;
   }
+
+  //////////
+
+  ping = async (endpointName: string): Promise<number> => {
+    const { url, expectedStatusCode } =
+      this.config.findEndpointByName(endpointName);
+
+    if (!url) throw new Error(`No URL found for '${endpointName}'`);
+    if (!expectedStatusCode)
+      throw new Error(`No expected status code found for '${endpointName}'`);
+
+    const headers = new Headers({
+      'User-Agent': `${pkg.name} bot`,
+    });
+    const response = await fetch(url, { headers });
+
+    return response.status;
+  };
 
   checkLiveliness = async (endpointName: string) => {
     const isAlive = await this.isAlive(endpointName);
@@ -46,7 +63,7 @@ export default class FetcherHandler {
 
   checkEveryEndpoints = async () => {
     await Promise.all(
-      this.fetcher.config.endpointsConfigs.map(({ name }) =>
+      this.config.endpointsConfigs.map(({ name }) =>
         this.checkLiveliness(name),
       ),
     );
@@ -56,7 +73,7 @@ export default class FetcherHandler {
     let isAlive, status, error;
 
     try {
-      status = await this.fetcher.ping(endpointName);
+      status = await this.ping(endpointName);
       const { expectedStatusCode } =
         this.config.findEndpointByName(endpointName);
 
