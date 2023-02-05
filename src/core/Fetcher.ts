@@ -10,16 +10,16 @@ type EndpointUrl = Pick<EndpointConfig, 'name' | 'url' | 'expectedStatusCode'>;
 export type IFetcher = Fetcher;
 
 export default class Fetcher {
-  endpointsNames: string[];
+  config: Config;
   endpointsUrls: EndpointUrl[];
 
   constructor(config: Config) {
-    this.endpointsNames = [];
+    this.config = config;
+
     this.endpointsUrls = [];
-    config.endpointsConfigs.forEach((endpoint) => {
+    this.config.endpointsConfigs.forEach((endpoint) => {
       const { name, url, expectedStatusCode } = endpoint;
 
-      this.endpointsNames.push(name);
       this.endpointsUrls.push({
         name,
         url,
@@ -29,12 +29,8 @@ export default class Fetcher {
   }
 
   ping = async (endpointName: string): Promise<number> => {
-    if (!this.endpointsNames.includes(endpointName))
-      throw new Error(`Endpoint name '${endpointName}' not in config`);
-
-    const { url, expectedStatusCode } = this.endpointsUrls.find(
-      (endpoint) => endpoint.name === endpointName,
-    );
+    const { url, expectedStatusCode } =
+      this.config.findEndpointByName(endpointName);
 
     if (!url) throw new Error(`No URL found for '${endpointName}'`);
     if (!expectedStatusCode)

@@ -46,7 +46,9 @@ export default class FetcherHandler {
 
   checkEveryEndpoints = async () => {
     await Promise.all(
-      this.fetcher.endpointsNames.map((name) => this.checkLiveliness(name)),
+      this.fetcher.config.endpointsConfigs.map(({ name }) =>
+        this.checkLiveliness(name),
+      ),
     );
   };
 
@@ -55,9 +57,8 @@ export default class FetcherHandler {
 
     try {
       status = await this.fetcher.ping(endpointName);
-      const { expectedStatusCode } = this.config.endpointsConfigs.find(
-        (conf) => conf.name === endpointName,
-      );
+      const { expectedStatusCode } =
+        this.config.findEndpointByName(endpointName);
 
       isAlive = status === expectedStatusCode;
     } catch (e) {

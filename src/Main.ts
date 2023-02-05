@@ -48,10 +48,10 @@ const main = async () => {
     const fetcherHandler = new FetcherHandler(
       new Fetcher(config),
       discordHandler,
-      config, // TODO ugly, already present in fetcher
+      config,
       logger,
     );
-    const cronHandler = new CronHandler(fetcherHandler, config, logger); // TODO ugly, config already present in fetcher
+    const cronHandler = new CronHandler(fetcherHandler, config, logger);
 
     // Blocking methods
     await discordHandler.setup();
