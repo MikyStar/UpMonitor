@@ -1,7 +1,7 @@
 import Config from '../core/Config';
 import pkg from '../../package.json';
 import { ILogger, LogMessage } from '../core/Logger';
-import { AsyncUtils } from '../utils/async.utils';
+import { AsyncUtils, OnFailureProps } from '../utils/async.utils';
 import { DEFAULT_RETRY } from '../../config/IConfig';
 import { IDiscordHandler } from './discord.handler';
 
@@ -64,17 +64,26 @@ export default class FetcherHandler {
       }
     };
 
+    const onFailure = async ({ tryIndex }: OnFailureProps) => {
+      const isLastTry = tryIndex === maxRetryTimes;
+      const msg = `Try n°${tryIndex}/${maxRetryTimes} failed${
+        !isLastTry ? `, next retry in ${waitSeconds} seconds` : ''
+      }`;
+
+      this.logger.warn({
+        name: msg,
+        details: logDetails,
+      });
+    };
+
     const logDetails = { channelName: endpointName };
+
+    //////////
 
     try {
       await AsyncUtils.retry(
         handleChecking,
-        async ({ tryIndex }) => {
-          this.logger.warn({
-            name: `Making try n°${tryIndex}/${maxRetryTimes} in ${waitSeconds} seconds`,
-            details: logDetails,
-          });
-        },
+        onFailure,
         maxRetryTimes,
         waitSeconds,
       );

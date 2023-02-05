@@ -2,7 +2,7 @@ import { SystemUtils } from './system.utils';
 
 ////////////////////////////////////////
 
-type OnFailureProps = {
+export type OnFailureProps = {
   tryIndex: number;
   error: any;
 };
