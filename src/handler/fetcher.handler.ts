@@ -116,7 +116,7 @@ export default class FetcherHandler {
     if (!isAlive) {
       const log: LogMessage = {
         name: 'Endpoint not alive',
-        details: { status },
+        details: { status, expected: expectedStatusCode },
       };
 
       if (error) log.details = { ...log.details, error };
