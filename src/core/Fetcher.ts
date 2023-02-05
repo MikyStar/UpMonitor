@@ -1,40 +1,20 @@
-import { Config } from '../../config/config';
-import { EndpointConfig, IConfig } from '../../config/IConfig';
-
 import pkg from '../../package.json';
+import Config from './Config';
 
 ////////////////////////////////////////////////////////////////////////////////
 
-type EndpointUrl = Pick<EndpointConfig, 'name' | 'url' | 'expectedStatusCode'>;
-
 export type IFetcher = Fetcher;
 
-class Fetcher {
-  endpointsNames: string[];
-  endpointsUrls: EndpointUrl[];
+export default class Fetcher {
+  config: Config;
 
-  constructor(config: IConfig) {
-    this.endpointsNames = [];
-    this.endpointsUrls = [];
-    config.endpointsConfigs.forEach((endpoint) => {
-      const { name, url, expectedStatusCode } = endpoint;
-
-      this.endpointsNames.push(name);
-      this.endpointsUrls.push({
-        name,
-        url,
-        expectedStatusCode,
-      });
-    });
+  constructor(config: Config) {
+    this.config = config;
   }
 
   ping = async (endpointName: string): Promise<number> => {
-    if (!this.endpointsNames.includes(endpointName))
-      throw new Error(`Endpoint name '${endpointName}' not in config`);
-
-    const { url, expectedStatusCode } = this.endpointsUrls.find(
-      (endpoint) => endpoint.name === endpointName,
-    );
+    const { url, expectedStatusCode } =
+      this.config.findEndpointByName(endpointName);
 
     if (!url) throw new Error(`No URL found for '${endpointName}'`);
     if (!expectedStatusCode)
@@ -48,5 +28,3 @@ class Fetcher {
     return response.status;
   };
 }
-
-export default new Fetcher(Config);

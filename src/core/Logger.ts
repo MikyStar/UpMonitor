@@ -1,5 +1,6 @@
 import util from 'util';
 import { DateUtils } from '../utils/date.utils';
+import { NodeEnv, SystemUtils } from '../utils/system.utils';
 
 ////////////////////////////////////////
 
@@ -18,11 +19,10 @@ export type LogMessage = {
 export type ILogger = Logger;
 
 export type LogLevel = 'error' | 'warning' | 'info';
-export type NodeEnv = 'dev' | 'production';
 
 ////////////////////////////////////////
 
-class Logger {
+export default class Logger {
   formatMessage = (log: LogMessage) => {
     const level = log.level || 'info';
 
@@ -34,7 +34,7 @@ class Logger {
       name: log.name,
       level,
       timestamp: DateUtils.getFormatedTimeStamp(LOG_DATE_FORMAT),
-      env: process.env.NODE_ENV as NodeEnv,
+      env: SystemUtils.getEnv(),
       ...log,
     };
 
@@ -82,5 +82,3 @@ class Logger {
     console.error(formatedJSON);
   };
 }
-
-export default new Logger();

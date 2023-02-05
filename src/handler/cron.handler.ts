@@ -1,20 +1,19 @@
 import { CronJob } from 'cron';
-import { Config } from '../../config/config';
-import { IConfig } from '../../config/IConfig';
-import Logger, { ILogger } from '../core/Logger';
+import Config from '../core/Config';
+import { ILogger } from '../core/Logger';
 
-import FetcherHandler, { IFetcherHandler } from './fetcher.handler';
+import { IFetcherHandler } from './fetcher.handler';
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class CronHandler {
+export default class CronHandler {
   fetcherHandler: IFetcherHandler;
   cronJobs: CronJob[];
   logger: ILogger;
 
   constructor(
     fetcherHandler: IFetcherHandler,
-    config: IConfig,
+    config: Config,
     logger: ILogger,
   ) {
     this.fetcherHandler = fetcherHandler;
@@ -35,5 +34,3 @@ class CronHandler {
     });
   };
 }
-
-export default new CronHandler(FetcherHandler, Config, Logger);

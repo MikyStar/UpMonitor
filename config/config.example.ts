@@ -5,7 +5,7 @@ import { IConfig } from './IConfig';
 /**
  * You should make your own file named 'config.ts' based on this one
  * under this 'config' directory
- * You have to rename this variable 'Config' in your own file too
+ * You have to rename this variable 'config' in your own file too
  *
  * Check out the interface 'IConfig' for infos about optional types
  */
@@ -21,6 +21,12 @@ export const exampleConfig: IConfig = {
       expectedStatusCode: 200,
       channelID: 'Discord Channel ID',
       cronJobSchedule: '15 14 1 * *', // At 14:15 on day-of-month 1
+
+      // Optional
+      retry: {
+        times: 2,
+        waitSeconds: 3 * 60,
+      },
     },
   ],
 };
