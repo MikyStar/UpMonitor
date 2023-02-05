@@ -1,15 +1,20 @@
-import { Config } from '../config/config';
+import { config as userConfig } from '../config/config';
 import Logger from './core/Logger';
 import DiscordHandler from './handler/discord.handler';
-import { ConfigUtils } from './utils/config.utils';
 import FetcherHandler from './handler/fetcher.handler';
 import CronHandler from './handler/cron.handler';
 import { SystemUtils } from './utils/system.utils';
+import Config from './core/Config';
+import Fetcher from './core/Fetcher';
+
+////////////////////////////////////////
+
+const logger = new Logger();
 
 ////////////////////////////////////////
 
 process.on('uncaughtException', (error) => {
-  Logger.error({
+  logger.error({
     name: 'Process uncaught exception',
     details: error,
   });
@@ -18,7 +23,7 @@ process.on('uncaughtException', (error) => {
 });
 
 process.on('unhandledRejection', (error) => {
-  Logger.error({
+  logger.error({
     name: 'Process unhandled rejection',
     details: error,
   });
@@ -27,7 +32,7 @@ process.on('unhandledRejection', (error) => {
 });
 
 process.on('SIGINT', () => {
-  Logger.log({ name: 'Received SIGINT' });
+  logger.log({ name: 'Received SIGINT' });
 
   SystemUtils.exit(-1);
 });
@@ -36,17 +41,26 @@ process.on('SIGINT', () => {
 
 const main = async () => {
   try {
-    Logger.log({ name: 'Starting Server' });
+    logger.log({ name: 'Starting Server' });
+
+    const config = new Config(userConfig);
+    const discordHandler = new DiscordHandler(config, logger);
+    const fetcherHandler = new FetcherHandler(
+      new Fetcher(config),
+      discordHandler,
+      config, // TODO ugly, already present in fetcher
+      logger,
+    );
+    const cronHandler = new CronHandler(fetcherHandler, config, logger); // TODO ugly, config already present in fetcher
 
     // Blocking methods
-    ConfigUtils.check(Config);
-    await DiscordHandler.setup();
+    await discordHandler.setup();
 
     // Concurrent methods
-    FetcherHandler.checkEveryEndpoints();
-    CronHandler.startJobs();
+    fetcherHandler.checkEveryEndpoints();
+    cronHandler.startJobs();
   } catch (error) {
-    Logger.error({
+    logger.error({
       name: 'Unexpected error in main',
       details: error,
     });
