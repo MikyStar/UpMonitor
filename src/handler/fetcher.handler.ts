@@ -1,7 +1,8 @@
 import Config from '../core/Config';
 import pkg from '../../package.json';
 import { ILogger, LogMessage } from '../core/Logger';
-import { SystemUtils } from '../utils/system.utils';
+import { AsyncUtils } from '../utils/async.utils';
+import { DEFAULT_RETRY } from '../../config/IConfig';
 import { IDiscordHandler } from './discord.handler';
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,19 +46,43 @@ export default class FetcherHandler {
     return response.status;
   };
 
+  /**
+   * Also retries according to user's config or default if endpoint not alive
+   */
   checkLiveliness = async (endpointName: string) => {
-    const isAlive = await this.isAlive(endpointName);
+    const { retry } = this.config.findEndpointByName(endpointName);
 
-    if (!isAlive) {
-      const waitSeconds = 30;
+    const maxRetryTimes = retry?.times || DEFAULT_RETRY.times;
+    const waitSeconds = retry?.waitSeconds || DEFAULT_RETRY.waitSeconds;
 
-      this.logger.warn({
-        name: `Retrying in ${waitSeconds} seconds`,
-        details: { channelName: endpointName },
+    const handleChecking = async () => {
+      const isEndpointAlive = await this.isAlive(endpointName);
+
+      // As the AsyncUtils.retry function needs a rejection to make a retry
+      if (!isEndpointAlive) {
+        throw new Error();
+      }
+    };
+
+    const logDetails = { channelName: endpointName };
+
+    try {
+      await AsyncUtils.retry(
+        handleChecking,
+        async ({ tryIndex }) => {
+          this.logger.warn({
+            name: `Making try n°${tryIndex}/${maxRetryTimes} in ${waitSeconds} seconds`,
+            details: logDetails,
+          });
+        },
+        maxRetryTimes,
+        waitSeconds,
+      );
+    } catch (e) {
+      this.logger.error({
+        name: 'Endpoint failed to respond',
+        details: logDetails,
       });
-
-      await SystemUtils.wait(waitSeconds);
-      await this.isAlive(endpointName);
     }
   };
 
@@ -71,11 +96,10 @@ export default class FetcherHandler {
 
   private isAlive = async (endpointName: string) => {
     let isAlive, status, error;
+    const { expectedStatusCode } = this.config.findEndpointByName(endpointName);
 
     try {
       status = await this.ping(endpointName);
-      const { expectedStatusCode } =
-        this.config.findEndpointByName(endpointName);
 
       isAlive = status === expectedStatusCode;
     } catch (e) {
