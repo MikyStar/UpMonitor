@@ -1,15 +1,10 @@
-import { Config } from '../../config/config';
-import { EndpointConfig, IConfig } from '../../config/IConfig';
-import Logger, {
-  ILogger,
-  LogMessage,
-  LOG_DATE_FORMAT,
-  NodeEnv,
-} from '../core/Logger';
+import { EndpointConfig } from '../../config/IConfig';
+import { ILogger, LogMessage, LOG_DATE_FORMAT, NodeEnv } from '../core/Logger';
 
 import pkg from '../../package.json';
 import { DateUtils } from '../utils/date.utils';
 import { DiscordChannel } from '../core/DiscordChannel';
+import Config from '../core/Config';
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -24,12 +19,12 @@ type EndpointChannel = Pick<EndpointConfig, 'name'> & {
 
 export type IDiscordHandler = DiscordHandler;
 
-class DiscordHandler {
+export default class DiscordHandler {
   logger: ILogger;
   channelNames: string[];
   channels: EndpointChannel[];
 
-  constructor(config: IConfig, logger: ILogger) {
+  constructor(config: Config, logger: ILogger) {
     this.logger = logger;
 
     this.channelNames = [LOGS_CHANNEL, ERRORS_CHANNEL];
@@ -151,5 +146,3 @@ class DiscordHandler {
     return toReturn;
   };
 }
-
-export default new DiscordHandler(Config, Logger);

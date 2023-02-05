@@ -22,7 +22,7 @@ export type NodeEnv = 'dev' | 'production';
 
 ////////////////////////////////////////
 
-class Logger {
+export default class Logger {
   formatMessage = (log: LogMessage) => {
     const level = log.level || 'info';
 
@@ -82,5 +82,3 @@ class Logger {
     console.error(formatedJSON);
   };
 }
-
-export default new Logger();

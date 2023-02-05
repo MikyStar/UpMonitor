@@ -1,9 +1,8 @@
-import { Config } from '../../config/config';
-import { IConfig } from '../../config/IConfig';
-import Fetcher, { IFetcher } from '../core/Fetcher';
-import Logger, { ILogger, LogMessage } from '../core/Logger';
+import Config from '../core/Config';
+import { IFetcher } from '../core/Fetcher';
+import { ILogger, LogMessage } from '../core/Logger';
 import { SystemUtils } from '../utils/system.utils';
-import DiscordHandler, { IDiscordHandler } from './discord.handler';
+import { IDiscordHandler } from './discord.handler';
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -11,16 +10,16 @@ export type IFetcherHandler = FetcherHandler;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-class FetcherHandler {
+export default class FetcherHandler {
   fetcher: IFetcher;
   discordHandler: IDiscordHandler;
-  config: IConfig;
+  config: Config;
   logger: ILogger;
 
   constructor(
     fetcher: IFetcher,
     discordHandler: IDiscordHandler,
-    config: IConfig,
+    config: Config,
     logger: ILogger,
   ) {
     this.fetcher = fetcher;
@@ -85,5 +84,3 @@ class FetcherHandler {
     return isAlive;
   };
 }
-
-export default new FetcherHandler(Fetcher, DiscordHandler, Config, Logger);

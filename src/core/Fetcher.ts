@@ -1,7 +1,7 @@
-import { Config } from '../../config/config';
-import { EndpointConfig, IConfig } from '../../config/IConfig';
+import { EndpointConfig } from '../../config/IConfig';
 
 import pkg from '../../package.json';
+import Config from './Config';
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -9,11 +9,11 @@ type EndpointUrl = Pick<EndpointConfig, 'name' | 'url' | 'expectedStatusCode'>;
 
 export type IFetcher = Fetcher;
 
-class Fetcher {
+export default class Fetcher {
   endpointsNames: string[];
   endpointsUrls: EndpointUrl[];
 
-  constructor(config: IConfig) {
+  constructor(config: Config) {
     this.endpointsNames = [];
     this.endpointsUrls = [];
     config.endpointsConfigs.forEach((endpoint) => {
@@ -48,5 +48,3 @@ class Fetcher {
     return response.status;
   };
 }
-
-export default new Fetcher(Config);
