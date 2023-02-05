@@ -21,13 +21,13 @@
     "datas": [
         {
             "name": "refactor config with class",
-            "state": "wip",
+            "state": "done",
             "id": 0,
             "timestamp": "05/02/2023"
         },
         {
             "name": "use the retry config",
-            "state": "todo",
+            "state": "wip",
             "id": 1,
             "timestamp": "05/02/2023"
         }
