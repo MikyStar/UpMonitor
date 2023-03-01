@@ -2,7 +2,6 @@ lockfileVersion: 5.4
 
 specifiers:
   '@types/cron': ^2.0.0
-  '@types/prompts': ^2.0.14
   '@typescript-eslint/eslint-plugin': 5.48.1
   '@typescript-eslint/parser': 5.48.1
   cron: ^2.2.0
@@ -21,7 +20,6 @@ specifiers:
 
 dependencies:
   '@types/cron': 2.0.0
-  '@types/prompts': 2.4.2
   cron: 2.2.0
   discord.js: 14.7.1
   dotenv: 16.0.3
@@ -319,13 +317,6 @@ packages:
 
   /@types/node/18.11.18:
     resolution: {integrity: sha512-DHQpWGjyQKSHj3ebjFI/wRKcqQcdR+MoFBygntYOZytCqNfkd2ZC4ARDJ2DQqhjH5p85Nnd3jhUJIXrszFX/JA==}
-    dev: false
-
-  /@types/prompts/2.4.2:
-    resolution: {integrity: sha512-TwNx7qsjvRIUv/BCx583tqF5IINEVjCNqg9ofKHRlSoUHE62WBHrem4B1HGXcIrG511v29d1kJ9a/t2Esz7MIg==}
-    dependencies:
-      '@types/node': 18.11.18
-      kleur: 3.0.3
     dev: false
 
   /@types/semver/7.3.13:
@@ -1726,11 +1717,6 @@ packages:
     dependencies:
       minimist: 1.2.7
     dev: true
-
-  /kleur/3.0.3:
-    resolution: {integrity: sha512-eTIzlVOSUR+JxdDFepEYcBMtZ9Qqdef+rnzWdRZuMbOywu5tO2w2N7rqjoANZ5k9vywhL6Br1VRjUIgTQx4E8w==}
-    engines: {node: '>=6'}
-    dev: false
 
   /levn/0.4.1:
     resolution: {integrity: sha512-+bT2uH4E5LGE7h/n3evcS/sQlJXCpIp6ym8OWJ5eV6+67Dsql/LaaT7qJBAt2rzfoa/5QBGBhxDix1dMt2kQKQ==}
