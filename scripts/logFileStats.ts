@@ -5,7 +5,7 @@ import { LOG_DATE_FORMAT } from '../src/core/Logger';
 ////////////////////////////////////////
 
 const main = async () => {
-  const logFilePath = process.argv[1];
+  const logFilePath = process.argv[2]; // Actually first arg
 
   if (!logFilePath) throw new Error('You need to provide a log file');
 
