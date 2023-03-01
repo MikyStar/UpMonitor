@@ -1,6 +1,6 @@
 {
   "name": "up-monitor",
-  "version": "1.5.0",
+  "version": "1.5.1",
   "description": "Simple server running CRON jobs to ping endpoints and alert the down ones on endpoints",
   "author": "Mike AUBENAS",
   "license": "ISC",
@@ -13,13 +13,13 @@
     "start": "wds src/Main.ts",
 
     "dev:start": "NODE_ENV=dev pm2 start --name up-monitor-dev --log logs/up-monitor-dev.log --interpreter $(which pnpm) --interpreter-args start src/Main.ts --watch && pnpm dev:logs",
-    "dev:kill": "pm2 delete up-monitor-dev",
+    "dev:delete": "pm2 delete up-monitor-dev",
     "dev:logs": "pm2 logs up-monitor-dev",
 
     "daemon:start": "NODE_ENV=production pm2 start --name up-monitor-prod --log logs/up-monitor-prod.log --interpreter $(which pnpm) --interpreter-args start src/Main.ts",
     "daemon:stop": "pm2 stop up-monitor-prod",
     "daemon:resume": "pm2 restart up-monitor-prod",
-    "daemon:kill": "pm2 delete up-monitor-prod",
+    "daemon:delete": "pm2 delete up-monitor-prod",
     "daemon:logs": "pm2 logs up-monitor-prod",
     "daemon:logs:err": "pm2 logs up-monitor-prod --err",
     "daemon:logs:stats": "wds scripts/logFileStats.ts logs/up-monitor-prod.log",
