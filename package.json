@@ -22,6 +22,7 @@
     "daemon:kill": "pm2 delete up-monitor-prod",
     "daemon:logs": "pm2 logs up-monitor-prod",
     "daemon:logs:err": "pm2 logs up-monitor-prod --err",
+    "daemon:logs:stats": "wds scripts/logFileStats.ts logs/up-monitor-prod.log",
     "daemon:describe": "pm2 describe up-monitor-prod",
 
     "pm2:infos": "pm2 monitor up-monitor",
